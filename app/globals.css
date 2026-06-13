@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-jakarta: 'Plus Jakarta Sans', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.btn-primary {
+  color: #fff !important;
+}
+
+body {
+  font-family: var(--font-jakarta);
+}
+
+.scrollable {
+    overflow-y: auto;
+    max-height: 100vh;
+}
+
+.scrollable-preview {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 100vh;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* ===== LANDING PAGE — styles sur mesure ===== */
+
+/* CTA section - fond quadrillé */
+.cta-grid {
+  background-image:
+    linear-gradient(rgba(0,159,225,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,159,225,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Animation fade-in au scroll */
+.fade-in {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-in-scale {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.fade-in-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ===== ANIMATIONS KEYFRAMES ===== */
+
+/* Pulsation bordure carte simulation */
+@keyframes pulse-border {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(0, 159, 225, 0.1); }
+  50% { box-shadow: 0 0 0 3px rgba(0, 159, 225, 0.25); }
+}
+.animate-pulse-border {
+  animation: pulse-border 3s ease-in-out infinite;
+}
+
+/* Slide-in depuis la droite */
+.hero-card-enter {
+  opacity: 0;
+  transform: translateX(40px);
+}
+.hero-card-enter.visible {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* Stagger title — chaque mot monte */
+.stagger-title {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.stagger-title.visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+/* Progress bar animation */
+.progress-fill {
+  transition: width 1s linear;
+}
+
+/* Lignes animées CTA */
+@keyframes pulse-width {
+  0%, 100% { width: 8rem; opacity: 0.3; }
+  50% { width: 16rem; opacity: 0.6; }
+}
+.animate-line-1 {
+  animation: pulse-width 6s ease-in-out infinite;
+}
+.animate-line-2 {
+  animation: pulse-width 8s ease-in-out infinite 2s;
+}
+.animate-line-3 {
+  animation: pulse-width 7s ease-in-out infinite 4s;
+}
+
+/* Curseur clignotant pour le typing */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.typing-cursor::after {
+  content: '\2502';
+  animation: blink 0.8s step-end infinite;
+  @apply ml-0.5 text-brand-blue;
+}
+
+/* ===== STICKY CTA MOBILE ===== */
+@keyframes slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.sticky-cta-mobile {
+  @apply fixed bottom-0 left-0 right-0 z-40 lg:hidden;
+  animation: slide-up 0.3s ease-out;
+}
