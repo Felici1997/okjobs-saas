@@ -1,7 +1,7 @@
 import { Education, Experience, Hobby, Language, PersonalDetails, Skill } from '@/type';
 import React from 'react'
 import Image from 'next/image'
-import { BriefcaseBusiness, GraduationCap, Mail, MapPinCheckInside, Phone, Star } from 'lucide-react';
+import { IconBriefcase, IconCapStraight, IconMail, IconMapPin, IconPhone, IconStar } from '@tabler/icons-react';
 
 type Props = {
     personalDetails: PersonalDetails;
@@ -43,10 +43,10 @@ const getStarRating = (proficiency: string) => {
     return (
         <>
             {Array.from({ length: filledStars }, (_, index) => (
-                <Star key={index} className={`text-primary `} />
+                <IconStar key={index} className={`text-primary `} />
             ))}
             {Array.from({ length: maxStars - filledStars }, (_, index) => (
-                <Star key={index + filledStars} className="text-gray-300" />
+                <IconStar key={index + filledStars} className="text-gray-300" />
             ))}
         </>
     );
@@ -94,7 +94,7 @@ const CVPreview: React.FC<Props> = ({ personalDetails, file, theme, experiences,
                                     </div>
                                     {personalDetails.phone && (
                                         <div className='absolute left-0 top-0'>
-                                            <Phone className='w-5 text-primary' />
+                                            <IconPhone className='w-5 text-primary' />
                                         </div>
                                     )}
                                 </div>
@@ -106,7 +106,7 @@ const CVPreview: React.FC<Props> = ({ personalDetails, file, theme, experiences,
                                     </div>
                                     {personalDetails.email && (
                                         <div className='absolute left-0 top-0'>
-                                            <Mail className='w-5 text-primary' />
+                                            <IconMail className='w-5 text-primary' />
                                         </div>
                                     )}
                                 </div>
@@ -118,7 +118,7 @@ const CVPreview: React.FC<Props> = ({ personalDetails, file, theme, experiences,
                                     </div>
                                     {personalDetails.address && (
                                         <div className='absolute left-0 top-0'>
-                                            <MapPinCheckInside className='w-5 text-primary' />
+                                            <IconMapPin className='w-5 text-primary' />
                                         </div>
                                     )}
                                 </div>
@@ -205,7 +205,7 @@ const CVPreview: React.FC<Props> = ({ personalDetails, file, theme, experiences,
                                     <div className='text-left'>
                                         <h2
                                             className='flex text-md uppercase font-bold'>
-                                            <BriefcaseBusiness className='w-5' />
+                                            <IconBriefcase className='w-5' />
                                             <span className='ml-2'>{exp.jobTitle}</span>
                                         </h2>
                                         <div
@@ -244,7 +244,7 @@ const CVPreview: React.FC<Props> = ({ personalDetails, file, theme, experiences,
                                     <div className='text-left'>
                                         <h2
                                             className='flex text-md uppercase font-bold'>
-                                            <GraduationCap className='w-5' />
+                                            <IconCapStraight className='w-5' />
                                             <span className='ml-2'>{edu.degree}</span>
                                         </h2>
                                         <div

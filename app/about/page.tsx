@@ -2,21 +2,21 @@
 
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
-import { Target, Lightbulb, Users } from 'lucide-react';
+import { IconFocus2, IconBulb, IconUsers } from '@tabler/icons-react';
 
 const values = [
   {
-    icon: Target,
+    icon: IconFocus2,
     title: 'Notre mission',
     desc: 'Démocratiser la préparation aux entretiens d\'embauche grâce à l\'intelligence artificielle. Nous croyons que chacun mérite une chance égale de réussir ses entretiens.',
   },
   {
-    icon: Lightbulb,
+    icon: IconBulb,
     title: 'Notre approche',
     desc: 'Utiliser les modèles d\'IA les plus avancés (Gemma 4 31B) pour simuler des entretiens réalistes et fournir des feedbacks constructifs et personnalisés.',
   },
   {
-    icon: Users,
+    icon: IconUsers,
     title: 'Notre équipe',
     desc: 'Une équipe passionnée par l\'IA et l\'éducation, déterminée à aider les candidats à donner le meilleur d\'eux-mêmes lors de leurs entretiens.',
   },

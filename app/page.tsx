@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Check } from 'lucide-react';
+import { IconArrowRight, IconCheck } from '@tabler/icons-react';
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
 import AnimatedCounter from '@/app/components/AnimatedCounter';
@@ -56,7 +56,7 @@ function StaggerTitle({ text, highlight }: { text: string; highlight: string }) 
         <span key={i} className="stagger-title inline-block mr-3">{w}</span>
       ))}
       <br />
-      <span className="text-brand-blue stagger-title inline-block">{highlight}</span>
+      <span className="signal stagger-title inline-block">{highlight}</span>
     </h1>
   );
 }
@@ -84,7 +84,7 @@ function SimulationCard() {
   return (
     <div ref={cardRef} className="hero-card-enter bg-white border border-black/5 p-8">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-8 h-8 rounded-full bg-brand-blue/10 flex items-center justify-center text-xs font-semibold text-brand-blue">IA</div>
+        <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold" style={{ background: 'rgba(0,159,225,0.1)', color: '#009fe1' }}>IA</div>
         <div>
           <p className="text-sm font-semibold">Recruteur · Technique</p>
           <p className="text-xs text-black/40 font-mono">Question 3/5</p>
@@ -99,8 +99,9 @@ function SimulationCard() {
         {[1, 2, 3].map((i) => (
           <div key={i} className="flex-1 h-px bg-black/10">
             <div
-              className="h-full bg-brand-blue/60 progress-fill"
+              className="h-full progress-fill"
               style={{
+                background: 'rgba(0,159,225,0.6)',
                 width: i === 2 ? `${isComplete ? Math.min(100, progress) : 0}%` : i === 0 ? '100%' : (isComplete ? `${Math.min(100, progress)}%` : '0%'),
                 transitionDuration: i === 1 ? '0.3s' : '0.3s',
               }}
@@ -109,7 +110,7 @@ function SimulationCard() {
         ))}
       </div>
       <div className="flex justify-between text-xs font-mono">
-        <span className="text-brand-blue">Progression</span>
+        <span className="signal">Progression</span>
         <span className={timerColor}>{isComplete ? displayTime : '--:--'}</span>
       </div>
     </div>
@@ -145,7 +146,7 @@ export default function LandingPage() {
 
         {/* ===== HERO ===== */}
         <section className="relative min-h-[85vh] flex items-center pt-24 pb-16 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,0,0,0.02)_0%,transparent_70%)]" />
+          <div className="absolute inset-0 hero-grid-bg" />
           <div className="max-w-7xl mx-auto px-8 w-full">
             <div className="grid lg:grid-cols-12 gap-12 items-center">
               <div className="lg:col-span-7">
@@ -157,10 +158,12 @@ export default function LandingPage() {
                 <div className="mt-10 flex flex-col sm:flex-row gap-4">
                   <Link
                     href="/register"
-                    className="group inline-flex items-center gap-3 px-8 py-4 bg-brand-blue text-white text-sm font-semibold tracking-wide hover:bg-brand-blue/90 transition-colors active:scale-[0.97]"
+                    className="group inline-flex items-center gap-3 px-8 py-4 text-white text-sm font-semibold tracking-wide transition-colors active:scale-[0.97]" style={{ background: '#009fe1' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = '#0088cc'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = '#009fe1'; }}
                   >
                     Essayer gratuitement
-                    <ArrowRight className="w-4 group-hover:translate-x-1 transition-transform" />
+                    <IconArrowRight className="w-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                   <Link
                     href="/#features"
@@ -169,7 +172,7 @@ export default function LandingPage() {
                     Voir les fonctionnalités
                   </Link>
                 </div>
-                <p className="mt-6 text-xs text-brand-blue font-mono tracking-wider">
+                <p className="mt-6 text-xs signal font-mono tracking-wider">
                   3 entretiens gratuits par mois · Sans carte bancaire
                 </p>
               </div>
@@ -184,13 +187,13 @@ export default function LandingPage() {
         <section className="bg-black/[0.02] border-t border-black/5">
           <div className="max-w-5xl mx-auto px-8 py-8">
             <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 text-sm">
-              <span className="text-brand-blue font-semibold text-lg">+500</span>
+              <span className="signal font-semibold text-lg">+500</span>
               <span className="text-black/30 hidden sm:inline">·</span>
               <span className="text-black/60 font-medium">candidats entraînés</span>
               <span className="text-black/30 hidden sm:inline">·</span>
               <span className="text-black/60 font-medium">Note 4.8/5</span>
               <span className="text-black/30 hidden sm:inline">·</span>
-              <span className="text-sm font-mono text-brand-blue tracking-wider">Sans carte bancaire</span>
+              <span className="text-sm font-mono signal tracking-wider">Sans carte bancaire</span>
             </div>
           </div>
         </section>
@@ -202,24 +205,24 @@ export default function LandingPage() {
               <FadeInSection>
                 <h2 className="text-3xl md:text-5xl font-semibold tracking-tight max-w-lg leading-[1.05]">
                   Vous stressez à l&apos;idée<br />
-                  <span className="text-brand-blue">de l&apos;entretien ?</span>
+                  <span className="signal">de l&apos;entretien ?</span>
                 </h2>
               </FadeInSection>
               <FadeInSection>
-                <div className="space-y-4">
-                  <div className="p-6 bg-black/[0.02] border border-black/5">
-                    <p className="font-semibold mb-1">Questions génériques</p>
-                    <p className="text-sm text-black/50 leading-relaxed">Les recruteurs ne posent pas les mêmes questions que les simulateurs basiques. Vous arrivez démuni.</p>
+                  <div className="space-y-4">
+                    <div className="p-6 bg-black/[0.02] border border-black/5 hover-lift">
+                      <p className="font-semibold mb-1">Questions génériques</p>
+                      <p className="text-sm text-black/50 leading-relaxed">Les recruteurs ne posent pas les mêmes questions que les simulateurs basiques. Vous arrivez démuni.</p>
+                    </div>
+                    <div className="p-6 bg-black/[0.02] border border-black/5 hover-lift">
+                      <p className="font-semibold mb-1">Pas de vrai feedback</p>
+                      <p className="text-sm text-black/50 leading-relaxed">Vous répondez, mais personne ne vous dit ce qui cloche. Impossible de progresser sans retour.</p>
+                    </div>
+                    <div className="p-6 bg-black/[0.02] border border-black/5 hover-lift">
+                      <p className="font-semibold mb-1">Le stress du chrono</p>
+                      <p className="text-sm text-black/50 leading-relaxed">En entretien réel, le temps file. Sans entraînement au timer, vous perdez vos moyens.</p>
+                    </div>
                   </div>
-                  <div className="p-6 bg-black/[0.02] border border-black/5">
-                    <p className="font-semibold mb-1">Pas de vrai feedback</p>
-                    <p className="text-sm text-black/50 leading-relaxed">Vous répondez, mais personne ne vous dit ce qui cloche. Impossible de progresser sans retour.</p>
-                  </div>
-                  <div className="p-6 bg-black/[0.02] border border-black/5">
-                    <p className="font-semibold mb-1">Le stress du chrono</p>
-                    <p className="text-sm text-black/50 leading-relaxed">En entretien réel, le temps file. Sans entraînement au timer, vous perdez vos moyens.</p>
-                  </div>
-                </div>
               </FadeInSection>
             </div>
           </div>
@@ -231,14 +234,14 @@ export default function LandingPage() {
             <FadeInSection>
               <h2 className="text-3xl md:text-5xl font-semibold tracking-tight max-w-2xl leading-[1.05]">
                 Pas de questions génériques.<br />
-                <span className="text-brand-blue">Des questions pour vous.</span>
+                <span className="signal">Des questions pour vous.</span>
               </h2>
             </FadeInSection>
             <div className="grid md:grid-cols-2 gap-px bg-black/10 mt-16">
               {features.map((f, i) => (
                 <FadeInSection key={f.number} delay={i * 80}>
-                  <div className="p-8 bg-white h-full">
-                    <p className="text-xs font-mono text-brand-blue font-semibold mb-4">{f.number}</p>
+                  <div className="p-8 bg-white h-full hover-lift">
+                    <p className="text-xs font-mono signal font-semibold mb-4">{f.number}</p>
                     <h3 className="text-lg font-semibold mb-3">{f.title}</h3>
                     <p className="text-sm text-black/50 leading-relaxed">{f.desc}</p>
                   </div>
@@ -254,7 +257,7 @@ export default function LandingPage() {
             <FadeInSection>
               <h2 className="text-3xl md:text-5xl font-semibold tracking-tight leading-[1.05]">
                 Trois minutes.<br />
-                <span className="text-brand-blue">Trois étapes.</span>
+                <span className="signal">Trois étapes.</span>
               </h2>
             </FadeInSection>
             <div className="grid md:grid-cols-3 gap-12 md:gap-16 mt-16">
@@ -283,7 +286,7 @@ export default function LandingPage() {
             <FadeInSection>
               <h2 className="text-3xl md:text-5xl font-semibold tracking-tight leading-[1.05]">
                 Ils ont préparé<br />
-                <span className="text-brand-blue">et décroché.</span>
+                <span className="signal">et décroché.</span>
               </h2>
             </FadeInSection>
             <div className="grid md:grid-cols-3 gap-px bg-black/10 mt-16">
@@ -302,7 +305,7 @@ export default function LandingPage() {
                 },
               ].map((t) => (
                 <FadeInSection key={t.name}>
-                  <div className="p-8 bg-white h-full border-b md:border-b-0 border-black/5">
+                  <div className="p-8 bg-white h-full border-b md:border-b-0 border-black/5 hover-lift">
                     <p className="text-sm leading-relaxed text-black/70 mb-6">
                       &ldquo;{t.text}&rdquo;
                     </p>
@@ -323,7 +326,7 @@ export default function LandingPage() {
             <FadeInSection>
               <h2 className="text-3xl md:text-5xl font-semibold tracking-tight leading-[1.05]">
                 Gratuit pour commencer.<br />
-                <span className="text-brand-blue">Pro pour aller loin.</span>
+                <span className="signal">Pro pour aller loin.</span>
               </h2>
             </FadeInSection>
             <div className="grid md:grid-cols-3 gap-px bg-black/10 mt-16">
@@ -345,7 +348,7 @@ export default function LandingPage() {
                 },
               ].map((p) => (
                 <FadeInSection key={p.name}>
-                  <div className={`p-8 bg-white h-full flex flex-col ${p.featured ? 'border-2 border-brand-blue shadow-sm' : 'border-b md:border-b-0 border-black/5'}`}>
+                  <div className={`p-8 bg-white h-full flex flex-col hover-lift ${p.featured ? 'border-2 signal-border shadow-sm' : 'border-b md:border-b-0 border-black/5'}`}>
                     <div>
                       <p className="text-xs font-mono text-black/40 tracking-wider uppercase mb-1">{p.tag}</p>
                       <p className="text-xl font-semibold mb-1">{p.name}</p>
@@ -353,7 +356,7 @@ export default function LandingPage() {
                       <ul className="space-y-3 mb-10">
                         {p.items.map((item) => (
                           <li key={item} className="flex items-start gap-3 text-sm text-black/60">
-                            <Check className="w-3.5 mt-0.5 shrink-0 text-brand-blue" />
+                            <IconCheck className="w-3.5 mt-0.5 shrink-0 signal" />
                             {item}
                           </li>
                         ))}
@@ -362,7 +365,10 @@ export default function LandingPage() {
                     <div className="mt-auto">
                       <Link
                         href={p.href}
-                        className={`block text-center py-3 text-sm font-medium tracking-wide transition-colors ${p.featured ? 'bg-brand-blue text-white hover:bg-brand-blue/90' : 'border border-black/10 hover:bg-black/[0.02]'}`}
+                        className={`block text-center py-3 text-sm font-medium tracking-wide transition-colors ${p.featured ? 'text-white' : 'border border-black/10 hover:bg-black/[0.02]'}`}
+                        style={p.featured ? { background: '#009fe1' } : {}}
+                        onMouseEnter={(e) => { if (p.featured) e.currentTarget.style.background = '#0088cc'; }}
+                        onMouseLeave={(e) => { if (p.featured) e.currentTarget.style.background = '#009fe1'; }}
                       >
                         {p.cta}
                       </Link>
@@ -395,7 +401,7 @@ export default function LandingPage() {
                     className={`w-full flex items-center justify-between p-6 bg-white text-left transition-colors ${faqOpen === i ? 'bg-black/[0.01]' : 'hover:bg-black/[0.01]'}`}
                   >
                     <span className="text-sm font-medium">{f.q}</span>
-                    <span className={`text-xs font-mono text-brand-blue transition-transform ${faqOpen === i ? 'rotate-45' : ''}`}>+</span>
+                    <span className={`text-xs font-mono signal transition-transform ${faqOpen === i ? 'rotate-45' : ''}`}>+</span>
                   </button>
                   {faqOpen === i && (
                     <div className="px-6 pb-6 bg-white">
@@ -409,11 +415,12 @@ export default function LandingPage() {
         </section>
 
         {/* ===== FINAL CTA ===== */}
-        <section className="cta-grid py-32 bg-brand-blue relative overflow-hidden">
+        <section className="py-32 relative overflow-hidden" style={{ background: '#009fe1' }}>
+          <div className="absolute inset-0 hero-grid-bg" style={{ opacity: 0.08 }} />
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute h-px bg-white/10 top-1/4 left-1/4 animate-line-1" />
-            <div className="absolute h-px bg-white/10 top-2/3 right-1/3 animate-line-2" />
-            <div className="absolute h-px bg-white/10 bottom-1/4 left-1/3 animate-line-3" />
+            <div className="absolute h-px bg-white/20 top-1/4 left-1/4 animate-line-1" />
+            <div className="absolute h-px bg-white/20 top-2/3 right-1/3 animate-line-2" />
+            <div className="absolute h-px bg-white/20 bottom-1/4 left-1/3 animate-line-3" />
           </div>
           <div className="max-w-4xl mx-auto px-8 text-center relative z-10">
             <FadeInSection scale>
@@ -427,10 +434,11 @@ export default function LandingPage() {
               <div className="mt-10">
                 <Link
                   href="/register"
-                  className="group inline-flex items-center gap-3 px-8 py-4 bg-white text-brand-blue text-sm font-bold tracking-wide hover:bg-white/90 transition-colors active:scale-[0.97]"
+                  className="group inline-flex items-center gap-3 px-8 py-4 bg-white text-sm font-bold tracking-wide hover:bg-white/90 transition-colors active:scale-[0.97]"
+                  style={{ color: '#009fe1' }}
                 >
                   Commencer mon essai gratuit
-                  <ArrowRight className="w-4 group-hover:translate-x-1 transition-transform" />
+                  <IconArrowRight className="w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </FadeInSection>
@@ -443,10 +451,12 @@ export default function LandingPage() {
       <div className="sticky-cta-mobile">
         <Link
           href="/register"
-          className="flex items-center justify-center gap-3 px-6 py-4 bg-brand-blue text-white font-semibold tracking-wide hover:bg-brand-blue/90 transition-colors"
+          className="flex items-center justify-center gap-3 px-6 py-4 text-white font-semibold tracking-wide transition-colors" style={{ background: '#009fe1' }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = '#0088cc'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = '#009fe1'; }}
         >
           Essayer gratuitement
-          <ArrowRight className="w-4" />
+          <IconArrowRight className="w-4" />
         </Link>
       </div>
 

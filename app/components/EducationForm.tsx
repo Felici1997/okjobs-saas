@@ -1,5 +1,5 @@
 import { Education } from '@/type';
-import { Plus } from 'lucide-react';
+import { IconPlus } from '@tabler/icons-react';
 import React, { useState } from 'react'
 
 type Props = {
@@ -94,7 +94,7 @@ const EducationForm: React.FC<Props> = ({ educations, setEducations }) => {
                 className='btn btn-primary mt-4'
             >
                 Ajouter
-                <Plus className='w-4' />
+                <IconPlus className='w-4' />
             </button>
 
         </div>

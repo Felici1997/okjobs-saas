@@ -5,7 +5,7 @@ import { useAuth } from '@/lib/contexts/auth-context';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter, useParams } from 'next/navigation';
 import Timer from '@/app/components/Timer';
-import { Send, Loader2, Square, MessageSquare, User } from 'lucide-react';
+import { IconSend, IconLoader2, IconSquare, IconMessage2, IconUser } from '@tabler/icons-react';
 
 type ChatMessage = {
   id: string;
@@ -148,7 +148,7 @@ export default function InterviewChatPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <IconLoader2 className="w-8 h-8 animate-spin" style={{ color: '#534AB7' }} />
       </div>
     );
   }
@@ -160,131 +160,101 @@ export default function InterviewChatPage() {
     comportemental: 'Comportemental',
     motivationnel: 'Motivationnel',
   };
+  const typeColors: Record<string, { bg: string; text: string }> = {
+    technique: { bg: '#E6F1FB', text: '#0C447C' },
+    comportemental: { bg: '#EEEDFE', text: '#3C3489' },
+    motivationnel: { bg: '#E1F5EE', text: '#085041' },
+  };
+  const tc = typeColors[session.interview_type] || { bg: '#F3F4F6', text: '#6B7280' };
 
   return (
-    <div className="max-w-3xl mx-auto flex flex-col h-[calc(100vh-6rem)]">
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 bg-base-100 rounded-t-box border border-base-300">
+    <div style={{ maxWidth: '720px', margin: '0 auto', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 6rem)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: '#fff', border: '0.5px solid #E5E7EB', borderBottom: 'none', borderRadius: '12px 12px 0 0' }}>
         <div>
-          <h1 className="font-bold">{session.job_title}</h1>
-          <div className="flex gap-2 mt-1">
-            <span className="badge badge-sm">
+          <h1 style={{ fontSize: '15px', fontWeight: 600, margin: 0 }}>{session.job_title}</h1>
+          <div style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
+            <span style={{ fontSize: '12px', fontWeight: 500, padding: '1px 8px', borderRadius: '99px', background: tc.bg, color: tc.text }}>
               {typeLabel[session.interview_type] || session.interview_type}
             </span>
-            <span className="badge badge-sm badge-outline capitalize">
+            <span style={{ fontSize: '12px', fontWeight: 500, padding: '1px 8px', borderRadius: '99px', border: '0.5px solid #D1D5DB', textTransform: 'capitalize' }}>
               {session.difficulty}
             </span>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <Timer minutes={session.timer_minutes} onExpired={handleTimerExpired} />
-          <button
-            onClick={handleEnd}
-            disabled={sending}
-            className="btn btn-error btn-sm"
-          >
-            <Square className="w-3" />
+          <button onClick={handleEnd} disabled={sending}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 500, padding: '6px 12px', borderRadius: '6px', border: '0.5px solid #FCA5A5', background: '#FCEBEB', color: '#791F1F', cursor: 'pointer' }}>
+            <IconSquare style={{ width: '12px', height: '12px' }} />
             Terminer
           </button>
         </div>
       </div>
 
-      {/* Chat messages */}
-      <div className="flex-1 overflow-y-auto p-4 bg-base-100 border-x border-base-300 space-y-4">
+      <div style={{ flex: 1, overflowY: 'auto', padding: '16px', background: '#fff', borderLeft: '0.5px solid #E5E7EB', borderRight: '0.5px solid #E5E7EB', display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {messages.length === 0 && !sending && (
-          <div className="flex items-center justify-center h-full text-base-content/40">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#9CA3AF' }}>
             <p>Préparation de l&apos;entretien...</p>
           </div>
         )}
 
         {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
+          <div key={msg.id} style={{ display: 'flex', gap: '10px', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
             {msg.role === 'assistant' && (
-              <div className="avatar placeholder">
-                <div className="bg-primary text-primary-content rounded-full w-8">
-                  <MessageSquare className="w-4" />
-                </div>
+              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#EEEDFE', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <IconMessage2 style={{ width: '14px', height: '14px', color: '#534AB7' }} />
               </div>
             )}
-            <div
-              className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm ${
-                msg.role === 'user'
-                  ? 'bg-primary text-primary-content rounded-br-md'
-                  : 'bg-base-300 rounded-bl-md'
-              }`}
-            >
+            <div style={{
+              maxWidth: '75%', padding: '10px 14px', fontSize: '14px', lineHeight: 1.5,
+              borderRadius: msg.role === 'user' ? '12px 12px 4px 12px' : '12px 12px 12px 4px',
+              background: msg.role === 'user' ? '#534AB7' : '#F3F4F6',
+              color: msg.role === 'user' ? '#fff' : '#111827',
+            }}>
               {stripMarkdown(msg.content)}
             </div>
             {msg.role === 'user' && (
-              <div className="avatar placeholder">
-                <div className="bg-secondary text-secondary-content rounded-full w-8">
-                  <User className="w-4" />
-                </div>
+              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#E5E7EB', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <IconUser style={{ width: '14px', height: '14px', color: '#6B7280' }} />
               </div>
             )}
           </div>
         ))}
 
         {sending && (
-          <div className="flex gap-3">
-            <div className="avatar placeholder">
-              <div className="bg-primary text-primary-content rounded-full w-8">
-                <MessageSquare className="w-4" />
-              </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#EEEDFE', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <IconMessage2 style={{ width: '14px', height: '14px', color: '#534AB7' }} />
             </div>
-            <div className="bg-base-300 rounded-2xl rounded-bl-md px-4 py-3">
+            <div style={{ background: '#F3F4F6', borderRadius: '12px 12px 12px 4px', padding: '10px 14px' }}>
               <span className="loading loading-dots loading-sm" />
             </div>
           </div>
         )}
 
         {done && (
-          <div className="text-center py-4">
-            <p className="text-base-content/60 mb-2">Entretien terminé</p>
-            <button
-              onClick={() => router.push(`/interview/${id}/feedback`)}
-              className="btn btn-primary"
-            >
+          <div style={{ textAlign: 'center', padding: '16px 0' }}>
+            <p style={{ color: '#6B7280', marginBottom: '10px', fontSize: '14px' }}>Entretien terminé</p>
+            <button onClick={() => router.push(`/interview/${id}/feedback`)}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: 'pointer' }}>
               Voir le feedback
             </button>
           </div>
         )}
 
-        {error && (
-          <div className="alert alert-error text-sm py-2">{error}</div>
-        )}
+        {error && <div style={{ background: '#FCEBEB', color: '#791F1F', fontSize: '13px', padding: '8px 12px', borderRadius: '8px', border: '0.5px solid #FCA5A5' }}>{error}</div>}
 
         <div ref={chatEndRef} />
       </div>
 
-      {/* Input */}
       {!done && (
-        <form
-          onSubmit={handleSubmit}
-          className="flex gap-2 p-4 bg-base-100 border border-base-300 rounded-b-box"
-        >
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Votre réponse..."
-            className="input input-bordered flex-1"
-            disabled={sending}
-            autoFocus
-          />
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={!input.trim() || sending}
-          >
-            {sending ? (
-              <Loader2 className="w-4 animate-spin" />
-            ) : (
-              <Send className="w-4" />
-            )}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '8px', padding: '12px 16px', background: '#fff', border: '0.5px solid #E5E7EB', borderTop: 'none', borderRadius: '0 0 12px 12px' }}>
+          <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Votre réponse..."
+            disabled={sending} autoFocus
+            style={{ flex: 1, padding: '8px 12px', fontSize: '14px', border: '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827' }} />
+          <button type="submit" disabled={!input.trim() || sending}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: 'pointer' }}>
+            {sending ? <IconLoader2 className="w-4 animate-spin" /> : <IconSend style={{ width: '14px', height: '14px' }} />}
             Envoyer
           </button>
         </form>

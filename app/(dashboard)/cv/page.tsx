@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
-import { Plus, FileText, ExternalLink, Upload, Trash2 } from 'lucide-react';
+import { IconPlus, IconFileDescription, IconExternalLink, IconUpload, IconTrash } from '@tabler/icons-react';
 
 export default function CVPage() {
   const { user } = useAuth();
@@ -27,72 +27,77 @@ export default function CVPage() {
   }, [user, supabase]);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
+    <div style={{ maxWidth: '800px', margin: '0 auto' }} className="space-y-4">
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
         <div>
-          <h1 className="text-3xl font-bold">Mon CV</h1>
-          <p className="text-base-content/60 mt-1">
+          <h1 style={{ fontSize: '22px', fontWeight: 500, margin: 0 }}>Mon CV</h1>
+          <p style={{ fontSize: '14px', color: '#6B7280', margin: '4px 0 0' }}>
             Gérez vos CV et personnalisez vos entretiens
           </p>
         </div>
-        <div className="flex gap-2">
-          <Link href="/cv/import" className="btn btn-outline">
-            <Upload className="w-4" />
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Link href="/cv/import" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: '0.5px solid #D1D5DB', background: 'transparent', color: 'inherit', textDecoration: 'none' }}>
+            <IconUpload style={{ width: '15px', height: '15px' }} />
             Importer
           </Link>
-          <Link href="/cv/new" className="btn btn-primary">
-            <Plus className="w-4" />
+          <Link href="/cv/new" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', textDecoration: 'none' }}>
+            <IconPlus style={{ width: '15px', height: '15px' }} />
             Nouveau CV
           </Link>
         </div>
       </div>
 
       {cvs.length === 0 ? (
-        <div className="card bg-base-100 shadow-sm">
-          <div className="card-body items-center text-center py-16">
-            <FileText className="w-16 h-16 text-base-content/20 mb-4" />
-            <h3 className="text-lg font-medium">Aucun CV pour le moment</h3>
-            <p className="text-base-content/60 mt-1 mb-6">
-              Créez votre premier CV pour que l'IA puisse personnaliser vos entretiens
-            </p>
-            <Link href="/cv/new" className="btn btn-primary">
-              <Plus className="w-4" />
-              Créer mon CV
-            </Link>
+        <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '3rem 1.5rem', textAlign: 'center' }}>
+          <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: '#EEEDFE', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem' }}>
+            <IconFileDescription style={{ width: '26px', height: '26px', color: '#3C3489' }} />
           </div>
+          <p style={{ fontSize: '15px', fontWeight: 500, color: '#111827', marginBottom: '4px' }}>Aucun CV pour le moment</p>
+          <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '1.25rem', lineHeight: 1.6 }}>
+            Créez votre premier CV pour que l&apos;IA puisse personnaliser vos entretiens
+          </p>
+          <Link href="/cv/new" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', textDecoration: 'none' }}>
+            <IconPlus style={{ width: '15px', height: '15px' }} />
+            Créer mon CV
+          </Link>
         </div>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-3">
           {cvs.map((cv) => (
-            <div key={cv.id} className="card bg-base-100 shadow-sm">
-              <div className="card-body flex-row items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <FileText className="w-8 text-primary" />
-                  <div>
-                    <h3 className="font-bold">{cv.title}</h3>
-                    <p className="text-sm text-base-content/60">
-                      Modifié le {new Date(cv.updated_at).toLocaleDateString('fr-FR')}
-                    </p>
+            <div key={cv.id} style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0 }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: '#EEEDFE', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <IconFileDescription style={{ width: '20px', height: '20px', color: '#3C3489' }} />
+                </div>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                    <p style={{ fontSize: '15px', fontWeight: 500, color: '#111827', margin: 0 }}>{cv.title}</p>
+                    {cv.is_active && (
+                      <span style={{ fontSize: '12px', fontWeight: 500, padding: '2px 10px', borderRadius: '99px', background: '#EEEDFE', color: '#3C3489' }}>Actif</span>
+                    )}
                   </div>
-                  {cv.is_active && (
-                    <span className="badge badge-primary badge-sm">Actif</span>
-                  )}
+                  <p style={{ fontSize: '13px', color: '#6B7280', margin: '2px 0 0' }}>
+                    Modifié le {new Date(cv.updated_at).toLocaleDateString('fr-FR')}
+                  </p>
                 </div>
-                <div className="flex gap-2">
-                  <Link href={`/cv/${cv.id}`} className="btn btn-ghost btn-sm">
-                    <ExternalLink className="w-4" />
-                    Modifier
-                  </Link>
-                  <button
-                    onClick={async () => {
-                      await supabase.from('cv_documents').delete().eq('id', cv.id);
-                      loadCvs();
-                    }}
-                    className="btn btn-ghost btn-sm text-error"
-                  >
-                    <Trash2 className="w-4" />
-                  </button>
-                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+                <Link href={`/cv/${cv.id}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '8px 14px', borderRadius: '8px', border: '0.5px solid #E5E7EB', background: 'transparent', color: '#6B7280', textDecoration: 'none' }}>
+                  <IconExternalLink style={{ width: '15px', height: '15px' }} />
+                  Modifier
+                </Link>
+                <button
+                  onClick={async () => {
+                    await supabase.from('cv_documents').delete().eq('id', cv.id);
+                    loadCvs();
+                  }}
+                  aria-label="Supprimer ce CV"
+                  style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '8px', border: '0.5px solid #E5E7EB', background: 'transparent', color: '#A32D2D', cursor: 'pointer' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = '#FCEBEB'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                >
+                  <IconTrash style={{ width: '16px', height: '16px' }} />
+                </button>
               </div>
             </div>
           ))}

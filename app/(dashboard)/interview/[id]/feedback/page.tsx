@@ -6,21 +6,21 @@ import { createClient } from '@/lib/supabase/client';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
-  Loader2,
-  ArrowLeft,
-  Trophy,
-  Target,
-  Lightbulb,
-  TrendingUp,
-  BarChart3,
-  CheckCircle2,
-  AlertTriangle,
-  Crown,
-  Code,
-  Users,
-  MessageSquare,
-  Lock,
-} from 'lucide-react';
+  IconLoader2,
+  IconArrowLeft,
+  IconTrophyFilled,
+  IconFocus2,
+  IconBulb,
+  IconTrendingUp,
+  IconChartHistogram,
+  IconCircleCheck,
+  IconAlertTriangle,
+  IconCrownFilled,
+  IconCode,
+  IconUsersGroup,
+  IconMessage2,
+  IconLock,
+} from '@tabler/icons-react';
 
 type Feedback = {
   id: string;
@@ -77,7 +77,7 @@ export default function FeedbackPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <IconLoader2 className="w-8 h-8 animate-spin" style={{ color: '#534AB7' }} />
       </div>
     );
   }
@@ -88,21 +88,22 @@ export default function FeedbackPage() {
   const circumference = 2 * Math.PI * 55;
   const offset = circumference - (score / 100) * circumference;
 
-  const scoreRingColor =
-    score >= 70 ? '#639922' : score >= 40 ? '#BA7517' : '#E24B4A';
-  const scoreTextColor =
-    score >= 70 ? '#639922' : score >= 40 ? '#BA7517' : '#E24B4A';
+  const scoreRingColor = score >= 70 ? '#639922' : score >= 40 ? '#BA7517' : '#E24B4A';
+  const scoreTextColor = score >= 70 ? '#639922' : score >= 40 ? '#BA7517' : '#E24B4A';
 
   const scoreLabel =
-    score >= 90
-      ? 'Excellent !'
-      : score >= 80
-        ? 'Bon travail'
-        : score >= 60
-          ? 'Peut mieux faire'
-          : score >= 40
-            ? 'En dessous des attentes'
-            : 'Insuffisant';
+    score >= 90 ? 'Excellent !'
+    : score >= 80 ? 'Bon travail'
+    : score >= 60 ? 'Peut mieux faire'
+    : score >= 40 ? 'En dessous des attentes'
+    : 'Insuffisant';
+
+  const typeColors: Record<string, { bg: string; text: string }> = {
+    technique: { bg: '#E6F1FB', text: '#0C447C' },
+    comportemental: { bg: '#EEEDFE', text: '#3C3489' },
+    motivationnel: { bg: '#E1F5EE', text: '#085041' },
+  };
+  const tc = typeColors[session.interview_type] || { bg: '#F3F4F6', text: '#6B7280' };
 
   const placeholderStrengths = [
     'Bonne maîtrise des concepts clés',
@@ -127,160 +128,118 @@ export default function FeedbackPage() {
     (feedback?.recommendations && feedback.recommendations.length > 0);
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <Link href="/history" className="btn btn-ghost btn-sm">
-          <ArrowLeft className="w-4" />
+    <div style={{ maxWidth: '720px', margin: '0 auto' }} className="space-y-5">
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <Link href="/history" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '8px 14px', borderRadius: '8px', border: '0.5px solid #D1D5DB', background: 'transparent', color: 'inherit', textDecoration: 'none' }}>
+          <IconArrowLeft style={{ width: '14px', height: '14px' }} />
           Retour
         </Link>
         <div>
-          <h1 className="text-3xl font-bold">Feedback</h1>
-          <p className="text-base-content/60 mt-1">{session.job_title}</p>
+          <h1 style={{ fontSize: '22px', fontWeight: 500, margin: 0 }}>Feedback</h1>
+          <p style={{ fontSize: '14px', color: '#6B7280', margin: '4px 0 0' }}>{session.job_title}</p>
         </div>
       </div>
 
-      {/* Score ring */}
-      <div className="card bg-base-100 shadow-sm">
-        <div className="card-body items-center text-center py-8">
-          <div className="relative w-[130px] h-[130px] mx-auto mb-5">
-            <svg viewBox="0 0 130 130" width="130" height="130" className="-rotate-90">
-              <circle
-                cx="65" cy="65" r="55"
-                fill="none"
-                stroke="oklch(var(--b3))"
-                strokeWidth="8"
-              />
-              <circle
-                cx="65" cy="65" r="55"
-                fill="none"
-                strokeWidth="8"
-                strokeLinecap="round"
-                stroke={scoreRingColor}
-                strokeDasharray={circumference}
-                strokeDashoffset={offset}
-                style={{ transition: 'stroke-dashoffset 0.6s ease' }}
-              />
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span
-                className="text-[28px] font-medium leading-none"
-                style={{ color: scoreTextColor }}
-              >
-                {score}
-              </span>
-              <span className="text-[13px] text-base-content/50 mt-0.5">/ 100</span>
-            </div>
+      <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.5rem', textAlign: 'center' }}>
+        <div style={{ position: 'relative', width: '130px', height: '130px', margin: '0 auto 1.25rem' }}>
+          <svg viewBox="0 0 130 130" width="130" height="130" style={{ transform: 'rotate(-90deg)' }}>
+            <circle cx="65" cy="65" r="55" fill="none" stroke="#E5E7EB" strokeWidth="8" />
+            <circle cx="65" cy="65" r="55" fill="none" strokeWidth="8" strokeLinecap="round"
+              stroke={scoreRingColor} strokeDasharray={circumference} strokeDashoffset={offset}
+              style={{ transition: 'stroke-dashoffset 0.6s ease' }} />
+          </svg>
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontSize: '28px', fontWeight: 500, lineHeight: 1, color: scoreTextColor }}>{score}</span>
+            <span style={{ fontSize: '13px', color: '#9CA3AF', marginTop: '2px' }}>/ 100</span>
           </div>
-          <h2 className="text-xl font-semibold">{scoreLabel}</h2>
-          <div className="flex items-center gap-2 mt-2 text-sm text-base-content/60">
-            <span className="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800">
-              {session.interview_type === 'technique' ? <Code className="w-3 h-3" /> :
-               session.interview_type === 'comportemental' ? <Users className="w-3 h-3" /> :
-               <MessageSquare className="w-3 h-3" />}
-              {typeLabels[session.interview_type] || session.interview_type}
-            </span>
-            <span>·</span>
-            <span>{session.status === 'timeout' ? 'Temps écoulé' : 'Terminé'}</span>
-          </div>
+        </div>
+        <h2 style={{ fontSize: '18px', fontWeight: 600, margin: 0 }}>{scoreLabel}</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px', fontSize: '13px', color: '#6B7280' }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 500, padding: '2px 10px', borderRadius: '99px', background: tc.bg, color: tc.text }}>
+            {session.interview_type === 'technique' ? <IconCode style={{ width: '12px', height: '12px' }} /> :
+             session.interview_type === 'comportemental' ? <IconUsersGroup style={{ width: '12px', height: '12px' }} /> :
+             <IconMessage2 style={{ width: '12px', height: '12px' }} />}
+            {typeLabels[session.interview_type] || session.interview_type}
+          </span>
+          <span>·</span>
+          <span>{session.status === 'timeout' ? 'Temps écoulé' : 'Terminé'}</span>
         </div>
       </div>
 
-      {/* Summary */}
       {feedback?.summary && (
-        <div className="card bg-base-100 shadow-sm">
-          <div className="card-body">
-            <h2 className="card-title text-base">
-              <BarChart3 className="w-4" />
-              Résumé
-            </h2>
-            <p className="text-sm text-base-content/70 leading-relaxed mt-1">
-              {feedback.summary}
-            </p>
-          </div>
+        <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem' }}>
+          <h2 style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', fontWeight: 500, color: '#111827', margin: '0 0 8px' }}>
+            <IconChartHistogram style={{ width: '16px', height: '16px', color: '#534AB7' }} />
+            Résumé
+          </h2>
+          <p style={{ fontSize: '14px', color: '#6B7280', lineHeight: 1.6, margin: 0 }}>
+            {feedback.summary}
+          </p>
         </div>
       )}
 
-      {/* Upgrade banner for free users */}
       {plan === 'free' && hasProContent && (
-        <div className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-xl p-4">
-          <div className="w-9 h-9 rounded-lg bg-blue-200 flex items-center justify-center flex-shrink-0">
-            <Crown className="w-[18px] text-blue-800" />
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', background: '#EEEDFE', border: '0.5px solid #D0C8F4', borderRadius: '10px', padding: '12px 14px' }}>
+          <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#534AB7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <IconCrownFilled style={{ width: '16px', height: '16px', color: '#fff' }} />
           </div>
-          <div className="text-sm text-blue-700 leading-relaxed">
-            <strong className="text-blue-800">Feedback basique inclus.</strong>{' '}
-            Passez à Pro pour voir l'analyse détaillée — forces, faiblesses et recommandations personnalisées.
+          <div style={{ fontSize: '13px', color: '#3C3489', lineHeight: 1.5 }}>
+            <strong>Feedback basique inclus.</strong>{' '}
+            Passez à Pro pour voir l&apos;analyse détaillée — forces, faiblesses et recommandations personnalisées.
             <br />
-            <Link href="/#pricing" className="font-medium text-blue-800 underline">
+            <Link href="/#pricing" style={{ fontWeight: 500, color: '#3C3489', textDecoration: 'underline' }}>
               Voir les offres Pro →
             </Link>
           </div>
         </div>
       )}
 
-      {/* Strengths & Weaknesses — blurred for free */}
-      {plan === 'free' ||
-      (feedback?.strengths && feedback.strengths.length > 0) ||
-      (feedback?.weaknesses && feedback.weaknesses.length > 0) ? (
-        <div className="relative">
-          <div className={plan === 'free' ? 'blur-sm pointer-events-none select-none opacity-50' : ''}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {(plan === 'free' ||
+        (feedback?.strengths && feedback.strengths.length > 0) ||
+        (feedback?.weaknesses && feedback.weaknesses.length > 0)) ? (
+        <div style={{ position: 'relative' }}>
+          <div style={plan === 'free' ? { filter: 'blur(4px)', pointerEvents: 'none', userSelect: 'none', opacity: 0.5 } : {}}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               {(plan === 'free' || (feedback?.strengths && feedback.strengths.length > 0)) && (
-                <div className="card bg-base-100 shadow-sm border-t-4 border-t-[#639922]">
-                  <div className="card-body">
-                    <h2 className="card-title text-base" style={{ color: '#27500A' }}>
-                      <Trophy className="w-4" />
-                      Points forts
-                    </h2>
-                    <ul className="space-y-2 mt-1">
-                      {plan === 'free' && (!feedback?.strengths || feedback.strengths.length === 0)
-                        ? placeholderStrengths.map((s, i) => (
-                            <li key={i} className="flex gap-2 text-sm text-base-content/70">
-                              <CheckCircle2 className="w-4 flex-shrink-0 mt-0.5" style={{ color: '#639922' }} />
-                              {s}
-                            </li>
-                          ))
-                        : feedback?.strengths?.map((s, i) => (
-                            <li key={i} className="flex gap-2 text-sm text-base-content/70">
-                              <CheckCircle2 className="w-4 flex-shrink-0 mt-0.5" style={{ color: '#639922' }} />
-                              {s}
-                            </li>
-                          ))}
-                    </ul>
-                  </div>
+                <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem', borderLeft: '3px solid #639922' }}>
+                  <h2 style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', fontWeight: 500, color: '#27500A', margin: '0 0 8px' }}>
+                    <IconTrophyFilled style={{ width: '16px', height: '16px' }} />
+                    Points forts
+                  </h2>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                    {(plan === 'free' && (!feedback?.strengths || feedback.strengths.length === 0)
+                      ? placeholderStrengths : feedback?.strengths ?? []).map((s, i) => (
+                      <li key={i} style={{ display: 'flex', gap: '8px', fontSize: '13px', color: '#6B7280', marginBottom: '6px' }}>
+                        <IconCircleCheck style={{ width: '14px', height: '14px', flexShrink: 0, marginTop: '2px', color: '#639922' }} />
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
               {(plan === 'free' || (feedback?.weaknesses && feedback.weaknesses.length > 0)) && (
-                <div className="card bg-base-100 shadow-sm border-t-4 border-t-[#BA7517]">
-                  <div className="card-body">
-                    <h2 className="card-title text-base" style={{ color: '#633806' }}>
-                      <AlertTriangle className="w-4" />
-                      Points à améliorer
-                    </h2>
-                    <ul className="space-y-2 mt-1">
-                      {plan === 'free' && (!feedback?.weaknesses || feedback.weaknesses.length === 0)
-                        ? placeholderWeaknesses.map((w, i) => (
-                            <li key={i} className="flex gap-2 text-sm text-base-content/70">
-                              <Target className="w-4 flex-shrink-0 mt-0.5" style={{ color: '#BA7517' }} />
-                              {w}
-                            </li>
-                          ))
-                        : feedback?.weaknesses?.map((w, i) => (
-                            <li key={i} className="flex gap-2 text-sm text-base-content/70">
-                              <Target className="w-4 flex-shrink-0 mt-0.5" style={{ color: '#BA7517' }} />
-                              {w}
-                            </li>
-                          ))}
-                    </ul>
-                  </div>
+                <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem', borderLeft: '3px solid #BA7517' }}>
+                  <h2 style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', fontWeight: 500, color: '#633806', margin: '0 0 8px' }}>
+                    <IconAlertTriangle style={{ width: '16px', height: '16px' }} />
+                    Points à améliorer
+                  </h2>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                    {(plan === 'free' && (!feedback?.weaknesses || feedback.weaknesses.length === 0)
+                      ? placeholderWeaknesses : feedback?.weaknesses ?? []).map((w, i) => (
+                      <li key={i} style={{ display: 'flex', gap: '8px', fontSize: '13px', color: '#6B7280', marginBottom: '6px' }}>
+                        <IconFocus2 style={{ width: '14px', height: '14px', flexShrink: 0, marginTop: '2px', color: '#BA7517' }} />
+                        {w}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
             </div>
           </div>
           {plan === 'free' && (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3.5 py-1.5 rounded-full bg-purple-100 text-purple-800 border border-purple-300">
-                <Lock className="w-3 h-3" />
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 500, padding: '6px 14px', borderRadius: '99px', background: '#EEEDFE', color: '#3C3489', border: '0.5px solid #D0C8F4' }}>
+                <IconLock style={{ width: '12px', height: '12px' }} />
                 Réservé aux membres Pro
               </span>
             </div>
@@ -288,38 +247,29 @@ export default function FeedbackPage() {
         </div>
       ) : null}
 
-      {/* Recommendations — blurred for free */}
-      {plan === 'free' || (feedback?.recommendations && feedback.recommendations.length > 0) ? (
-        <div className="relative">
-          <div className={plan === 'free' ? 'blur-sm pointer-events-none select-none opacity-50' : ''}>
-            <div className="card bg-base-100 shadow-sm border-t-4 border-t-[#534AB7]">
-              <div className="card-body">
-                <h2 className="card-title text-base" style={{ color: '#3C3489' }}>
-                  <Lightbulb className="w-4" />
-                  Recommandations
-                </h2>
-                <ul className="space-y-2 mt-1">
-                  {plan === 'free' && (!feedback?.recommendations || feedback.recommendations.length === 0)
-                    ? placeholderRecommendations.map((r, i) => (
-                        <li key={i} className="flex gap-2 text-sm text-base-content/70">
-                          <TrendingUp className="w-4 flex-shrink-0 mt-0.5" style={{ color: '#534AB7' }} />
-                          {r}
-                        </li>
-                      ))
-                    : feedback?.recommendations?.map((r, i) => (
-                        <li key={i} className="flex gap-2 text-sm text-base-content/70">
-                          <TrendingUp className="w-4 flex-shrink-0 mt-0.5" style={{ color: '#534AB7' }} />
-                          {r}
-                        </li>
-                      ))}
-                </ul>
-              </div>
+      {(plan === 'free' || (feedback?.recommendations && feedback.recommendations.length > 0)) ? (
+        <div style={{ position: 'relative' }}>
+          <div style={plan === 'free' ? { filter: 'blur(4px)', pointerEvents: 'none', userSelect: 'none', opacity: 0.5 } : {}}>
+            <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem', borderLeft: '3px solid #534AB7' }}>
+              <h2 style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', fontWeight: 500, color: '#3C3489', margin: '0 0 8px' }}>
+                <IconBulb style={{ width: '16px', height: '16px' }} />
+                Recommandations
+              </h2>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                {(plan === 'free' && (!feedback?.recommendations || feedback.recommendations.length === 0)
+                  ? placeholderRecommendations : feedback?.recommendations ?? []).map((r, i) => (
+                  <li key={i} style={{ display: 'flex', gap: '8px', fontSize: '13px', color: '#6B7280', marginBottom: '6px' }}>
+                    <IconTrendingUp style={{ width: '14px', height: '14px', flexShrink: 0, marginTop: '2px', color: '#534AB7' }} />
+                    {r}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
           {plan === 'free' && (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3.5 py-1.5 rounded-full bg-purple-100 text-purple-800 border border-purple-300">
-                <Lock className="w-3 h-3" />
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 500, padding: '6px 14px', borderRadius: '99px', background: '#EEEDFE', color: '#3C3489', border: '0.5px solid #D0C8F4' }}>
+                <IconLock style={{ width: '12px', height: '12px' }} />
                 Réservé aux membres Pro
               </span>
             </div>
@@ -327,13 +277,12 @@ export default function FeedbackPage() {
         </div>
       ) : null}
 
-      {/* Actions */}
-      <div className="flex justify-center gap-4 pb-8">
-        <Link href="/interview" className="btn btn-primary">
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', paddingBottom: '2rem' }}>
+        <Link href="/interview" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', textDecoration: 'none' }}>
           Nouvel entretien
         </Link>
-        <Link href="/history" className="btn btn-outline">
-          Voir l'historique
+        <Link href="/history" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: '0.5px solid #D1D5DB', background: 'transparent', color: 'inherit', textDecoration: 'none' }}>
+          Voir l&apos;historique
         </Link>
       </div>
     </div>

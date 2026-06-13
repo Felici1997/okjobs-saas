@@ -1,26 +1,67 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import ScoreChart from '@/app/components/ScoreChart';
 import {
-  FileText,
-  MessageSquare,
-  TrendingUp,
-  LayoutDashboard,
-  ChevronRight,
-  Crown,
-} from 'lucide-react';
+  IconFileDescription,
+  IconMessageFilled,
+  IconTrendingUp,
+  IconLayoutDashboardFilled,
+  IconChevronRight,
+  IconHistory,
+  IconCrownFilled,
+} from '@tabler/icons-react';
 
 type Stats = {
   cvCount: number;
   interviewCount: number;
+  completedThisMonth: number;
   averageScore: number | null;
+  mostPracticedType: string | null;
+  mostPracticedTypeCount: number;
+  totalScored: number;
 };
 
 type SessionScore = { label: string; score: number | null };
+
+type RawSession = {
+  score: number | null;
+  started_at: string;
+  interview_type: string;
+};
+
+const typeLabels: Record<string, string> = {
+  technique: 'Technique',
+  comportemental: 'Comportemental',
+  motivationnel: 'Motivationnel',
+};
+
+const pillColors: Record<string, { bg: string; text: string }> = {
+  technique: { bg: '#E6F1FB', text: '#0C447C' },
+  comportemental: { bg: '#EEEDFE', text: '#3C3489' },
+  motivationnel: { bg: '#E1F5EE', text: '#085041' },
+};
+
+const now = new Date();
+const firstOfMonth = new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1));
+
+function getAvgColor(avg: number | null): { bar: string; text: string } {
+  if (avg === null) return { bar: '#D1D5DB', text: '#9CA3AF' };
+  if (avg >= 50) return { bar: '#639922', text: '#27500A' };
+  if (avg >= 20) return { bar: '#BA7517', text: '#633806' };
+  return { bar: '#791F1F', text: '#791F1F' };
+}
+
+function getReadyMessage(avg: number | null): string {
+  if (avg === null) return "Commencez un entretien pour évaluer votre niveau.";
+  if (avg >= 70) return "Excellent niveau ! Vous êtes prêt pour un vrai entretien.";
+  if (avg >= 50) return "Bonne progression, continuez à vous entraîner pour perfectionner vos réponses.";
+  if (avg >= 20) return "Encore un effort, la pratique régulière est la clé de la réussite.";
+  return "Entraînez-vous davantage pour gagner en confiance et en compétence.";
+}
 
 export default function DashboardPage() {
   const { user, plan } = useAuth();
@@ -28,161 +69,179 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<Stats>({
     cvCount: 0,
     interviewCount: 0,
+    completedThisMonth: 0,
     averageScore: null,
+    mostPracticedType: null,
+    mostPracticedTypeCount: 0,
+    totalScored: 0,
   });
-  const [chartData, setChartData] = useState<SessionScore[]>([]);
+  const [sessions, setSessions] = useState<RawSession[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadStats() {
       if (!user) return;
 
-      const [cvResult, interviewResult, scoresResult] = await Promise.all([
+      const [cvResult, interviewResult] = await Promise.all([
         supabase
           .from('cv_documents')
           .select('id', { count: 'exact', head: true }),
         supabase
           .from('interview_sessions')
-          .select('score', { count: 'exact' })
+          .select('score, started_at, interview_type', { count: 'exact' })
           .neq('status', 'in_progress'),
-        supabase
-          .from('interview_sessions')
-          .select('score, started_at')
-          .neq('status', 'in_progress')
-          .order('started_at', { ascending: true })
-          .limit(20),
       ]);
 
-      const scores = interviewResult.data
-        ?.map((r) => r.score)
-        .filter((s): s is number => s !== null) ?? [];
+      const data = (interviewResult.data ?? []) as RawSession[];
+      const scores = data
+        .map((r) => r.score)
+        .filter((s): s is number => s !== null);
+
+      const typeCount: Record<string, number> = {};
+      for (const r of data) {
+        if (r.interview_type) {
+          typeCount[r.interview_type] = (typeCount[r.interview_type] || 0) + 1;
+        }
+      }
+      const typeEntries = Object.entries(typeCount);
+      const mostType = typeEntries.length > 0
+        ? typeEntries.reduce((a, b) => (a[1] >= b[1] ? a : b))
+        : null;
+
+      const monthCompleted = data.filter((r) => {
+        const d = new Date(r.started_at);
+        return d >= firstOfMonth;
+      }).length;
 
       setStats({
         cvCount: cvResult.count ?? 0,
         interviewCount: interviewResult.count ?? 0,
+        completedThisMonth: monthCompleted,
         averageScore:
           scores.length > 0
             ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
             : null,
+        mostPracticedType: mostType ? typeLabels[mostType[0]] || mostType[0] : null,
+        mostPracticedTypeCount: mostType ? mostType[1] : 0,
+        totalScored: scores.length,
       });
 
-      setChartData(
-        (scoresResult.data ?? []).map((r) => ({
-          label: new Date(r.started_at).toLocaleDateString('fr-FR', {
-            day: '2-digit',
-            month: 'short',
-          }),
-          score: r.score,
-        }))
-      );
+      setSessions(data);
       setLoading(false);
     }
     loadStats();
   }, [user, supabase]);
 
+  const chartData = useMemo(() => {
+    const sorted = [...sessions]
+      .filter((s) => s.score !== null)
+      .sort((a, b) => new Date(a.started_at).getTime() - new Date(b.started_at).getTime())
+      .slice(-20);
+    return sorted.map((r) => ({
+      label: new Date(r.started_at).toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: 'short',
+      }),
+      score: r.score,
+    }));
+  }, [sessions]);
+
+  const avgColor = getAvgColor(stats.averageScore);
+  const readyMessage = getReadyMessage(stats.averageScore);
+
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-12">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-            Tableau de Bord Performance
+            Tableau de bord
           </h1>
           <p className="text-base-content/60 mt-1">
-            Bonjour, <span className="text-primary font-medium">{user?.user_metadata?.full_name || user?.email}</span>
+            Bonjour, <strong style={{ color: '#534AB7' }}>{user?.user_metadata?.full_name || user?.email}</strong>
           </p>
         </div>
         <div className="flex gap-2">
-          <Link href="/cv" className="btn btn-ghost btn-sm">Mon CV</Link>
-          <Link href="/interview" className="btn btn-primary btn-sm">Nouvel entretien</Link>
+          <Link href="/cv" style={{ fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: '0.5px solid #D1D5DB', background: 'transparent', color: 'inherit', textDecoration: 'none' }}>
+            Mon CV
+          </Link>
+          <Link href="/interview" style={{ fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', textDecoration: 'none' }}>
+            Nouvel entretien
+          </Link>
         </div>
       </div>
 
-      {/* Top Row: Stats + Ready Card */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Total Interviews */}
-        <div className="card bg-base-100 shadow-sm border-l-4 border-brand-blue overflow-hidden">
-          <div className="card-body p-5">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-brand-blue/10 rounded-lg text-brand-blue">
-                <LayoutDashboard className="w-5 h-5" />
-              </div>
-              <span className="text-sm font-medium text-base-content/60">Total Entretiens</span>
+        <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#EEEDFE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <IconLayoutDashboardFilled style={{ width: '16px', height: '16px', color: '#534AB7' }} />
             </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold">
-                {loading ? <span className="loading loading-dots loading-sm" /> : stats.interviewCount}
-              </span>
-              <span className="text-xs text-success font-medium">↑ 5 cette semaine</span>
-            </div>
+            <span style={{ fontSize: '13px', color: '#6B7280' }}>Total entretiens</span>
+          </div>
+          <div style={{ fontSize: '26px', fontWeight: 500, color: '#111827' }}>
+            {loading ? <span className="loading loading-dots loading-sm" /> : stats.interviewCount}
+          </div>
+          <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '4px' }}>
+            {stats.completedThisMonth} terminé{stats.completedThisMonth !== 1 ? 's' : ''} ce mois-ci
           </div>
         </div>
 
-        {/* Average Score */}
-        <div className="card bg-brand-blue text-white shadow-sm">
-          <div className="card-body p-5">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-white/20 rounded-lg">
-                <TrendingUp className="w-5 h-5" />
-              </div>
-              <span className="text-sm font-medium text-white/80">Score Moyen</span>
+        <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#FAEEDA', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <IconTrendingUp style={{ width: '16px', height: '16px', color: '#854F0B' }} />
             </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold">
-                {loading ? <span className="loading loading-dots loading-sm" /> : (stats.averageScore ? `${stats.averageScore}%` : '—')}
-              </span>
-              <span className="text-xs text-white/80">Derniers 5 : 88%</span>
-            </div>
+            <span style={{ fontSize: '13px', color: '#6B7280' }}>Score moyen</span>
+          </div>
+          <div style={{ fontSize: '26px', fontWeight: 500, color: avgColor.text }}>
+            {loading ? <span className="loading loading-dots loading-sm" /> : (stats.averageScore !== null ? `${stats.averageScore}%` : '—')}
+          </div>
+          <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '4px' }}>
+            sur {stats.totalScored} entretien{stats.totalScored !== 1 ? 's' : ''} notés
           </div>
         </div>
 
-        {/* Days Active */}
-        <div className="card bg-brand-blue text-white shadow-sm">
-          <div className="card-body p-5">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-white/20 rounded-lg">
-                <MessageSquare className="w-5 h-5" />
-              </div>
-              <span className="text-sm font-medium text-white/80">Jours Actifs</span>
+        <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <IconMessageFilled style={{ width: '16px', height: '16px', color: '#0C447C' }} />
             </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold">45</span>
-              <span className="text-xs text-white/80">Série : 10 jours</span>
-            </div>
+            <span style={{ fontSize: '13px', color: '#6B7280' }}>Type le plus pratiqué</span>
+          </div>
+          <div style={{ fontSize: '20px', fontWeight: 500, color: '#111827' }}>
+            {loading ? <span className="loading loading-dots loading-sm" /> : (stats.mostPracticedType || '—')}
+          </div>
+          <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '4px' }}>
+            {stats.mostPracticedTypeCount > 0 ? `${stats.mostPracticedTypeCount} sur ${stats.interviewCount} entretien${stats.interviewCount !== 1 ? 's' : ''}` : ''}
           </div>
         </div>
 
-        {/* Ready Card */}
-        <div className="card bg-base-100 shadow-sm border border-base-300">
-          <div className="card-body p-5">
-            <h3 className="font-bold text-base">Prêt pour le vrai entretien ?</h3>
-            <div className="mt-2">
-              <div className="flex justify-between text-xs mb-1">
-                <span className="text-success font-semibold">Prêt à 80%</span>
-              </div>
-              <progress className="progress progress-success w-full" value="80" max="100"></progress>
-            </div>
-            <p className="text-xs text-base-content/60 mt-3">
-              Votre progression est encourageante, vos compétences s'améliorent. Continuez !
-            </p>
-            <Link href="/interview" className="btn btn-warning btn-block mt-4 text-brand-blue font-bold">
-              S'entraîner
-            </Link>
+        <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem' }}>
+          <div style={{ fontSize: '14px', fontWeight: 500, marginBottom: '10px' }}>Prêt pour le vrai entretien ?</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '6px', color: '#6B7280' }}>
+            <span>Progression</span>
+            <span style={{ fontWeight: 500, color: avgColor.text }}>{stats.averageScore !== null ? `${stats.averageScore}%` : '—'}</span>
           </div>
+          <div style={{ height: '6px', borderRadius: '99px', background: '#E5E7EB', overflow: 'hidden', marginBottom: '10px' }}>
+            <div style={{ height: '100%', borderRadius: '99px', background: avgColor.bar, width: `${stats.averageScore ?? 0}%` }} />
+          </div>
+          <div style={{ fontSize: '12px', color: '#6B7280', lineHeight: '1.5', marginBottom: '12px' }}>
+            {readyMessage}
+          </div>
+          <Link href="/interview" style={{ display: 'block', textAlign: 'center', fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', textDecoration: 'none' }}>
+            S'entraîner
+          </Link>
         </div>
       </div>
 
-      {/* Main Content Area */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Chart + Recent Sessions */}
         <div className="lg:col-span-2 space-y-8">
-          {/* Performance Trend */}
           <div className="card bg-base-100 shadow-sm">
             <div className="card-body">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold">Tendance des Scores</h2>
+                <h2 className="text-xl font-bold">Tendance des scores</h2>
                 <select className="select select-ghost select-sm">
-                  <option>Tendance des 10 dernières sessions</option>
+                  <option>10 dernières sessions</option>
                 </select>
               </div>
               {plan === 'free' ? (
@@ -192,12 +251,14 @@ export default function DashboardPage() {
                   </div>
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
-                      <div className="p-3 bg-primary/10 rounded-full mx-auto mb-3 w-fit">
-                        <Crown className="w-6 h-6 text-primary" />
+                      <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#EEEDFE', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px' }}>
+                        <IconCrownFilled style={{ width: '20px', height: '20px', color: '#534AB7' }} />
                       </div>
-                      <p className="text-sm font-semibold mb-1">Débloquez votre progression</p>
-                      <p className="text-xs text-base-content/60 mb-4">Visualisez l'évolution de vos scores avec Pro</p>
-                      <Link href="/#pricing" className="btn btn-primary btn-sm">Voir les offres</Link>
+                      <p style={{ fontSize: '14px', fontWeight: 500, marginBottom: '2px' }}>Débloquez votre progression</p>
+                      <p style={{ fontSize: '12px', color: '#6B7280', marginBottom: '12px' }}>Visualisez l'évolution de vos scores avec Pro</p>
+                      <Link href="/#pricing" style={{ fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', textDecoration: 'none' }}>
+                        Voir les offres
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -207,44 +268,54 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Recent Sessions */}
           <div className="card bg-base-100 shadow-sm">
             <div className="card-body">
-              <h2 className="text-xl font-bold mb-4">Sessions Récentes</h2>
+              <h2 className="text-xl font-bold mb-4">Sessions récentes</h2>
               <RecentInterviews supabase={supabase} />
             </div>
           </div>
         </div>
 
-        {/* Right Column: Quick Actions */}
         <div className="lg:col-span-1 space-y-6">
           <div className="card bg-base-100 shadow-sm">
             <div className="card-body">
-              <h2 className="text-lg font-bold mb-4">Actions Rapides</h2>
+              <h2 className="text-lg font-bold mb-4">Actions rapides</h2>
               <div className="space-y-3">
                 <Link
                   href="/cv"
                   className="flex items-center justify-between p-4 rounded-xl bg-base-200 hover:bg-base-300 transition-colors group"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                      <FileText className="w-5 h-5" />
+                    <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#EEEDFE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <IconFileDescription style={{ width: '16px', height: '16px', color: '#534AB7' }} />
                     </div>
                     <span className="font-medium">Mon CV</span>
                   </div>
-                  <ChevronRight className="w-4 text-base-content/40 group-hover:translate-x-1 transition-transform" />
+                  <IconChevronRight className="w-4 text-base-content/40 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link
                   href="/interview"
                   className="flex items-center justify-between p-4 rounded-xl bg-base-200 hover:bg-base-300 transition-colors group"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-secondary/10 rounded-lg text-secondary">
-                      <MessageSquare className="w-5 h-5" />
+                    <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+<IconMessageFilled style={{ width: '16px', height: '16px', color: '#0C447C' }} />
                     </div>
                     <span className="font-medium">Nouvel entretien</span>
                   </div>
-                  <ChevronRight className="w-4 text-base-content/40 group-hover:translate-x-1 transition-transform" />
+                  <IconChevronRight className="w-4 text-base-content/40 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  href="/history"
+                  className="flex items-center justify-between p-4 rounded-xl bg-base-200 hover:bg-base-300 transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#E1F5EE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <IconHistory style={{ width: '16px', height: '16px', color: '#085041' }} />
+                    </div>
+                    <span className="font-medium">Voir l'historique</span>
+                  </div>
+                  <IconChevronRight className="w-4 text-base-content/40 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </div>

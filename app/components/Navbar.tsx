@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { IconMenu2, IconX } from '@tabler/icons-react';
 import { useAuth } from '@/lib/contexts/auth-context';
 
 export default function Navbar() {
@@ -28,7 +28,7 @@ export default function Navbar() {
 
       <div className="navbar-end gap-2">
         {user ? (
-          <Link href="/dashboard" className="btn btn-primary btn-sm hidden lg:inline-flex">
+          <Link href="/dashboard" className="btn btn-ghost btn-sm hidden lg:inline-flex" style={{ background: '#009fe1', color: '#fff', border: 'none' }}>
             Tableau de bord
           </Link>
         ) : (
@@ -36,13 +36,13 @@ export default function Navbar() {
             <Link href="/login" className="btn btn-ghost btn-sm hidden lg:inline-flex">
               Connexion
             </Link>
-            <Link href="/register" className="btn btn-primary btn-sm hidden lg:inline-flex">
+            <Link href="/register" className="btn btn-ghost btn-sm hidden lg:inline-flex" style={{ background: '#009fe1', color: '#fff', border: 'none' }}>
               S&apos;inscrire
             </Link>
           </>
         )}
         <button className="btn btn-ghost btn-sm lg:hidden" onClick={() => setOpen(!open)}>
-          {open ? <X className="w-5" /> : <Menu className="w-5" />}
+          {open ? <IconX className="w-5" /> : <IconMenu2 className="w-5" />}
         </button>
       </div>
 
@@ -54,11 +54,11 @@ export default function Navbar() {
             <li><Link href="/#pricing" onClick={() => setOpen(false)}>Tarifs</Link></li>
             <li><Link href="/api-docs" onClick={() => setOpen(false)}>API</Link></li>
             {user ? (
-              <li><Link href="/dashboard" onClick={() => setOpen(false)} className="btn btn-primary btn-sm mt-2">Tableau de bord</Link></li>
+              <li><Link href="/dashboard" onClick={() => setOpen(false)} className="btn btn-ghost btn-sm mt-2" style={{ background: '#009fe1', color: '#fff', border: 'none' }}>Tableau de bord</Link></li>
             ) : (
               <>
                 <li><Link href="/login" onClick={() => setOpen(false)}>Connexion</Link></li>
-                <li><Link href="/register" onClick={() => setOpen(false)} className="btn btn-primary btn-sm mt-2">S&apos;inscrire</Link></li>
+                <li><Link href="/register" onClick={() => setOpen(false)} className="btn btn-ghost btn-sm mt-2" style={{ background: '#009fe1', color: '#fff', border: 'none' }}>S&apos;inscrire</Link></li>
               </>
             )}
           </ul>

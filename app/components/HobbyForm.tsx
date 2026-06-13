@@ -1,5 +1,5 @@
 import { Hobby } from '@/type';
-import { Plus } from 'lucide-react';
+import { IconPlus } from '@tabler/icons-react';
 import React, { useState } from 'react'
 
 type Props = {
@@ -38,7 +38,7 @@ const HobbyForm : React.FC<Props> = ({ hobbies, setHobbies }) => {
         className='btn btn-primary mt-4'
       >
         Ajouter
-        <Plus className='w-4' />
+        <IconPlus className='w-4' />
       </button>
     </div>
   )

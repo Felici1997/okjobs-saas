@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { signUpSchema } from '@/lib/validations/auth';
-import { Eye, EyeOff, UserPlus } from 'lucide-react';
+import { IconEye, IconEyeOff, IconUserPlus } from '@tabler/icons-react';
 
 export default function RegisterPage() {
   const { signUp } = useAuth();
@@ -97,7 +97,7 @@ export default function RegisterPage() {
                   onClick={() => setShowPwd(!showPwd)}
                   className="absolute right-3 top-1/2 -translate-y-1/2"
                 >
-                  {showPwd ? <EyeOff className="w-4" /> : <Eye className="w-4" />}
+                  {showPwd ? <IconEyeOff className="w-4" /> : <IconEye className="w-4" />}
                 </button>
               </div>
             </div>
@@ -113,7 +113,7 @@ export default function RegisterPage() {
               {loading ? (
                 <span className="loading loading-spinner loading-sm" />
               ) : (
-                <UserPlus className="w-4" />
+                <IconUserPlus className="w-4" />
               )}
               Créer mon compte
             </button>

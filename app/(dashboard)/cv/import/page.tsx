@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { createClient } from '@/lib/supabase/client';
-import { Upload, FileText, Loader2, ArrowLeft, Crown } from 'lucide-react';
+import { IconUpload, IconFileDescription, IconLoader2, IconArrowLeft, IconCrownFilled } from '@tabler/icons-react';
 import Link from 'next/link';
 import * as pdfjs from 'pdfjs-dist';
 
@@ -80,7 +80,7 @@ export default function ImportCVPage() {
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
         <Link href="/cv" className="btn btn-ghost btn-sm">
-          <ArrowLeft className="w-4" />
+          <IconArrowLeft className="w-4" />
           Retour
         </Link>
         <div>
@@ -95,7 +95,7 @@ export default function ImportCVPage() {
         <div className="card bg-gradient-to-br from-primary/5 to-brand-blue/5 border-2 border-primary/20">
           <div className="card-body items-center text-center py-12">
             <div className="p-3 bg-primary/10 rounded-full mb-4">
-              <Crown className="w-8 h-8 text-primary" />
+              <IconCrownFilled className="w-8 h-8 text-primary" />
             </div>
             <h3 className="text-xl font-bold">Import PDF réservé aux membres Pro</h3>
             <p className="text-sm text-base-content/60 mt-2 max-w-md">
@@ -131,7 +131,7 @@ export default function ImportCVPage() {
             />
             {file ? (
               <div className="space-y-2">
-                <FileText className="w-12 h-12 mx-auto text-primary" />
+                <IconFileDescription className="w-12 h-12 mx-auto text-primary" />
                 <p className="font-medium">{file.name}</p>
                 <p className="text-sm text-base-content/60">
                   {(file.size / 1024).toFixed(0)} Ko
@@ -139,7 +139,7 @@ export default function ImportCVPage() {
               </div>
             ) : (
               <div className="space-y-2">
-                <Upload className="w-12 h-12 mx-auto text-base-content/30" />
+                <IconUpload className="w-12 h-12 mx-auto text-base-content/30" />
                 <p className="font-medium">
                   Glissez votre CV ici ou cliquez pour parcourir
                 </p>
@@ -156,12 +156,12 @@ export default function ImportCVPage() {
             >
               {extracting ? (
                 <>
-                  <Loader2 className="w-4 animate-spin" />
+                  <IconLoader2 className="w-4 animate-spin" />
                   Extraction en cours...
                 </>
               ) : (
                 <>
-                  <Upload className="w-4" />
+                  <IconUpload className="w-4" />
                   Extraire et créer le CV
                 </>
               )}

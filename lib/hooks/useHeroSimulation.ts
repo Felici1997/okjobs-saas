@@ -66,9 +66,9 @@ export function useHeroSimulation() {
 
   const timerColor =
     secondsLeft > 120
-      ? 'text-brand-blue'
+      ? 'text-[#009fe1]'
       : secondsLeft > 60
-        ? 'text-brand-yellow'
+        ? 'text-[#BA7517]'
         : 'text-red-500';
 
   const typedText = QUESTION.slice(0, typedChars);

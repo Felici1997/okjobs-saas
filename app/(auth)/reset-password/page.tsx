@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { resetPasswordSchema } from '@/lib/validations/auth';
-import { Mail, ArrowLeft } from 'lucide-react';
+import { IconMail, IconArrowLeft } from '@tabler/icons-react';
 
 export default function ResetPasswordPage() {
   const { resetPassword } = useAuth();
@@ -73,7 +73,7 @@ export default function ResetPasswordPage() {
               {loading ? (
                 <span className="loading loading-spinner loading-sm" />
               ) : (
-                <Mail className="w-4" />
+                <IconMail className="w-4" />
               )}
               Envoyer
             </button>
@@ -81,7 +81,7 @@ export default function ResetPasswordPage() {
 
           <div className="text-center mt-4">
             <Link href="/login" className="link link-primary text-sm flex items-center justify-center gap-1">
-              <ArrowLeft className="w-3" />
+              <IconArrowLeft className="w-3" />
               Retour à la connexion
             </Link>
           </div>

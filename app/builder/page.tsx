@@ -1,5 +1,5 @@
 'use client'
-import { Eye, RotateCw, Save } from "lucide-react";
+import { IconEye, IconRefresh, IconCheck } from "@tabler/icons-react";
 import Image from "next/image";
 import PersonalDetailsForm from "../components/PersonalDetailsForm";
 import { useEffect, useRef, useState } from "react";
@@ -102,35 +102,35 @@ export default function Builder() {
               </h1>
               <button className="btn btn-primary" onClick={() => (document.getElementById('my_modal_3') as HTMLDialogElement).showModal()}>
                 Prévisualiser
-                <Eye className="w-4" />
+                <IconEye className="w-4" />
               </button>
             </div>
             <div className="flex flex-col gap-6 rounded-lg">
               <div className="flex justify-between items-center">
                 <h1 className="badge badge-primary badge-outline">Qui êtes-vous ?</h1>
                 <button onClick={handleResetPersonalDetails} className="btn btn-primary btn-sm">
-                  <RotateCw className="w-4" />
+                  <IconRefresh className="w-4" />
                 </button>
               </div>
               <PersonalDetailsForm personalDetails={personalDetails} setPersonalDetails={setPersonalDetails} setFile={setFile} />
               <div className="flex justify-between items-center">
                 <h1 className="badge badge-primary badge-outline">Expériences</h1>
                 <button onClick={handleResetExperiences} className="btn btn-primary btn-sm">
-                  <RotateCw className="w-4" />
+                  <IconRefresh className="w-4" />
                 </button>
               </div>
               <ExperienceForm experience={experiences} setExperiences={setExperience} />
               <div className="flex justify-between items-center">
                 <h1 className="badge badge-primary badge-outline">Éducations</h1>
                 <button onClick={handleResetEducations} className="btn btn-primary btn-sm">
-                  <RotateCw className="w-4" />
+                  <IconRefresh className="w-4" />
                 </button>
               </div>
               <EducationForm educations={educations} setEducations={setEducations} />
               <div className="flex justify-between items-center">
                 <h1 className="badge badge-primary badge-outline">Langues</h1>
                 <button onClick={handleResetLanguages} className="btn btn-primary btn-sm">
-                  <RotateCw className="w-4" />
+                  <IconRefresh className="w-4" />
                 </button>
               </div>
               <LanguageForm languages={languages} setLanguages={setLanguages} />
@@ -139,7 +139,7 @@ export default function Builder() {
                   <div className="flex justify-between items-center">
                     <h1 className="badge badge-primary badge-outline">Compétences</h1>
                     <button onClick={handleResetSkills} className="btn btn-primary btn-sm">
-                      <RotateCw className="w-4" />
+                      <IconRefresh className="w-4" />
                     </button>
                   </div>
                   <SkillForm skills={skills} setSkills={setSkills} />
@@ -148,7 +148,7 @@ export default function Builder() {
                   <div className="flex justify-between items-center">
                     <h1 className="badge badge-primary badge-outline">Loisirs</h1>
                     <button onClick={handleResetHobbies} className="btn btn-primary btn-sm">
-                      <RotateCw className="w-4" />
+                      <IconRefresh className="w-4" />
                     </button>
                   </div>
                   <HobbyForm hobbies={hobbies} setHobbies={setHobbies} />
@@ -199,7 +199,7 @@ export default function Builder() {
               <div className="flex justify-end mb-5">
                 <button onClick={handleDownloadPdf} className="btn btn-primary">
                   Télécharger
-                  <Save className='w-4' />
+                  <IconCheck className='w-4' />
                 </button>
               </div>
               <div className="w-full max-x-full overflow-auto">

@@ -10,11 +10,7 @@ import EducationForm from '@/app/components/EducationForm';
 import SkillForm from '@/app/components/SkillForm';
 import LanguageForm from '@/app/components/LanguageForm';
 import HobbyForm from '@/app/components/HobbyForm';
-import {
-  Save,
-  RotateCw,
-  Loader2,
-} from 'lucide-react';
+import { IconCheck, IconRefresh, IconLoader2 } from '@tabler/icons-react';
 import type {
   PersonalDetails,
   Experience,
@@ -132,166 +128,107 @@ export default function CVEditForm({ cvId }: Props) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <IconLoader2 className="w-8 h-8 animate-spin" style={{ color: '#534AB7' }} />
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div style={{ maxWidth: '560px', margin: '0 auto' }} className="space-y-6">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
         <div>
-          <h1 className="text-3xl font-bold">
+          <h1 style={{ fontSize: '22px', fontWeight: 500, margin: 0 }}>
             {cvId ? 'Modifier mon CV' : 'Nouveau CV'}
           </h1>
-          <p className="text-base-content/60 mt-1">
+          <p style={{ fontSize: '14px', color: '#6B7280', margin: '4px 0 0' }}>
             Renseignez vos informations pour personnaliser vos entretiens
           </p>
         </div>
-        <button onClick={handleSave} className="btn btn-primary" disabled={saving}>
-          {saving ? (
-            <Loader2 className="w-4 animate-spin" />
-          ) : (
-            <Save className="w-4" />
-          )}
+        <button onClick={handleSave} disabled={saving}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: 'pointer' }}>
+          {saving ? <IconLoader2 className="w-4 animate-spin" /> : <IconCheck style={{ width: '15px', height: '15px' }} />}
           Enregistrer
         </button>
       </div>
 
-      {/* Title */}
-      <div className="form-control">
-        <label className="label">
-          <span className="label-text">Titre du CV</span>
-        </label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="input input-bordered w-full"
-          placeholder="Ex: CV Développeur Full Stack"
-        />
+      <div>
+        <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '4px' }}>Titre du CV</label>
+        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}
+          style={{ width: '100%', padding: '8px 12px', fontSize: '14px', border: '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827' }}
+          placeholder="Ex: CV Développeur Full Stack" />
       </div>
 
-      {/* Personal Details */}
-      <div className="card bg-base-100 shadow-sm">
-        <div className="card-body">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="card-title">Qui êtes-vous ?</h2>
-            <button
-              onClick={() =>
-                setPersonalDetails({
-                  fullName: '',
-                  email: '',
-                  phone: '',
-                  address: '',
-                  photoUrl: '',
-                  postSeeking: '',
-                  description: '',
-                })
-              }
-              className="btn btn-ghost btn-sm"
-            >
-              <RotateCw className="w-4" />
+      <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <h2 style={{ fontSize: '15px', fontWeight: 500, color: '#111827', margin: 0 }}>Qui êtes-vous ?</h2>
+          <button onClick={() => setPersonalDetails({ fullName: '', email: '', phone: '', address: '', photoUrl: '', postSeeking: '', description: '' })}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '6px', border: '0.5px solid #E5E7EB', background: 'transparent', color: '#6B7280', cursor: 'pointer' }}>
+            <IconRefresh style={{ width: '13px', height: '13px' }} />
+          </button>
+        </div>
+        <PersonalDetailsForm personalDetails={personalDetails} setPersonalDetails={setPersonalDetails} setFile={setFile} />
+      </div>
+
+      <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <h2 style={{ fontSize: '15px', fontWeight: 500, color: '#111827', margin: 0 }}>Expériences</h2>
+          <button onClick={() => setExperiences([])}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '6px', border: '0.5px solid #E5E7EB', background: 'transparent', color: '#6B7280', cursor: 'pointer' }}>
+            <IconRefresh style={{ width: '13px', height: '13px' }} />
+          </button>
+        </div>
+        <ExperienceForm experience={experiences} setExperiences={setExperiences} />
+      </div>
+
+      <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <h2 style={{ fontSize: '15px', fontWeight: 500, color: '#111827', margin: 0 }}>Formations</h2>
+          <button onClick={() => setEducations([])}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '6px', border: '0.5px solid #E5E7EB', background: 'transparent', color: '#6B7280', cursor: 'pointer' }}>
+            <IconRefresh style={{ width: '13px', height: '13px' }} />
+          </button>
+        </div>
+        <EducationForm educations={educations} setEducations={setEducations} />
+      </div>
+
+      <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <h2 style={{ fontSize: '15px', fontWeight: 500, color: '#111827', margin: 0 }}>Langues</h2>
+          <button onClick={() => setLanguages([])}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '6px', border: '0.5px solid #E5E7EB', background: 'transparent', color: '#6B7280', cursor: 'pointer' }}>
+            <IconRefresh style={{ width: '13px', height: '13px' }} />
+          </button>
+        </div>
+        <LanguageForm languages={languages} setLanguages={setLanguages} />
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+        <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+            <h2 style={{ fontSize: '15px', fontWeight: 500, color: '#111827', margin: 0 }}>Compétences</h2>
+            <button onClick={() => setSkills([])}
+              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '6px', border: '0.5px solid #E5E7EB', background: 'transparent', color: '#6B7280', cursor: 'pointer' }}>
+              <IconRefresh style={{ width: '13px', height: '13px' }} />
             </button>
           </div>
-          <PersonalDetailsForm
-            personalDetails={personalDetails}
-            setPersonalDetails={setPersonalDetails}
-            setFile={setFile}
-          />
+          <SkillForm skills={skills} setSkills={setSkills} />
         </div>
-      </div>
-
-      {/* Experiences */}
-      <div className="card bg-base-100 shadow-sm">
-        <div className="card-body">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="card-title">Expériences</h2>
-            <button
-              onClick={() => setExperiences([])}
-              className="btn btn-ghost btn-sm"
-            >
-              <RotateCw className="w-4" />
+        <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+            <h2 style={{ fontSize: '15px', fontWeight: 500, color: '#111827', margin: 0 }}>Loisirs</h2>
+            <button onClick={() => setHobbies([])}
+              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '6px', border: '0.5px solid #E5E7EB', background: 'transparent', color: '#6B7280', cursor: 'pointer' }}>
+              <IconRefresh style={{ width: '13px', height: '13px' }} />
             </button>
           </div>
-          <ExperienceForm experience={experiences} setExperiences={setExperiences} />
+          <HobbyForm hobbies={hobbies} setHobbies={setHobbies} />
         </div>
       </div>
 
-      {/* Education */}
-      <div className="card bg-base-100 shadow-sm">
-        <div className="card-body">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="card-title">Formations</h2>
-            <button
-              onClick={() => setEducations([])}
-              className="btn btn-ghost btn-sm"
-            >
-              <RotateCw className="w-4" />
-            </button>
-          </div>
-          <EducationForm educations={educations} setEducations={setEducations} />
-        </div>
-      </div>
-
-      {/* Languages */}
-      <div className="card bg-base-100 shadow-sm">
-        <div className="card-body">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="card-title">Langues</h2>
-            <button
-              onClick={() => setLanguages([])}
-              className="btn btn-ghost btn-sm"
-            >
-              <RotateCw className="w-4" />
-            </button>
-          </div>
-          <LanguageForm languages={languages} setLanguages={setLanguages} />
-        </div>
-      </div>
-
-      {/* Skills + Hobbies side by side */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="card bg-base-100 shadow-sm">
-          <div className="card-body">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="card-title">Compétences</h2>
-              <button
-                onClick={() => setSkills([])}
-                className="btn btn-ghost btn-sm"
-              >
-                <RotateCw className="w-4" />
-              </button>
-            </div>
-            <SkillForm skills={skills} setSkills={setSkills} />
-          </div>
-        </div>
-
-        <div className="card bg-base-100 shadow-sm">
-          <div className="card-body">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="card-title">Loisirs</h2>
-              <button
-                onClick={() => setHobbies([])}
-                className="btn btn-ghost btn-sm"
-              >
-                <RotateCw className="w-4" />
-              </button>
-            </div>
-            <HobbyForm hobbies={hobbies} setHobbies={setHobbies} />
-          </div>
-        </div>
-      </div>
-
-      {/* Save button bottom */}
-      <div className="flex justify-end pb-8">
-        <button onClick={handleSave} className="btn btn-primary btn-lg" disabled={saving}>
-          {saving ? (
-            <Loader2 className="w-4 animate-spin" />
-          ) : (
-            <Save className="w-4" />
-          )}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', paddingBottom: '2rem' }}>
+        <button onClick={handleSave} disabled={saving}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '14px', fontWeight: 500, padding: '10px 20px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: 'pointer' }}>
+          {saving ? <IconLoader2 className="w-4 animate-spin" /> : <IconCheck style={{ width: '15px', height: '15px' }} />}
           {cvId ? 'Mettre à jour' : 'Créer mon CV'}
         </button>
       </div>

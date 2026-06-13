@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/contexts/auth-context';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { interviewConfigSchema } from '@/lib/validations/interview';
-import { Lock, Crown } from 'lucide-react';
+import { IconLock, IconCrownFilled } from '@tabler/icons-react';
 import type { InterviewType, Difficulty } from '@/types';
 
 const interviewTypes: { value: InterviewType; label: string; desc: string }[] = [
@@ -111,175 +111,125 @@ export default function InterviewPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div style={{ maxWidth: '720px', margin: '0 auto' }} className="space-y-5">
       <div>
-        <h1 className="text-3xl font-bold">Nouvel entretien</h1>
-        <p className="text-base-content/60 mt-1">
-          Configurez votre entretien simulé avec l'IA
+        <h1 style={{ fontSize: '22px', fontWeight: 500, margin: 0 }}>Nouvel entretien</h1>
+        <p style={{ fontSize: '14px', color: '#6B7280', margin: '4px 0 0' }}>
+          Configurez votre entretien simulé avec l&apos;IA
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="card bg-base-100 shadow-sm">
-        <div className="card-body space-y-6">
-          {/* CV selector */}
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text">CV à utiliser</span>
-            </label>
-            <select
-              value={config.cvId}
-              onChange={(e) => setConfig({ ...config, cvId: e.target.value })}
-              className="select select-bordered w-full"
-            >
+      <form onSubmit={handleSubmit} style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.25rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '4px' }}>CV à utiliser</label>
+            <select value={config.cvId} onChange={(e) => setConfig({ ...config, cvId: e.target.value })}
+              style={{ width: '100%', padding: '8px 12px', fontSize: '14px', border: '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827' }}>
               <option value="">Pas de CV (questions génériques)</option>
               {cvs.map((cv) => (
-                <option key={cv.id} value={cv.id}>
-                  {cv.title}
-                </option>
+                <option key={cv.id} value={cv.id}>{cv.title}</option>
               ))}
             </select>
           </div>
 
-          {/* Job info */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Poste visé</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Ex: Développeur Full Stack"
-                value={config.jobTitle}
-                onChange={(e) => setConfig({ ...config, jobTitle: e.target.value })}
-                className="input input-bordered w-full"
-                required
-              />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '4px' }}>Poste visé</label>
+              <input type="text" placeholder="Ex: Développeur Full Stack" value={config.jobTitle}
+                onChange={(e) => setConfig({ ...config, jobTitle: e.target.value })} required
+                style={{ width: '100%', padding: '8px 12px', fontSize: '14px', border: '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827' }} />
             </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Secteur</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Ex: Tech, Finance, Santé..."
-                value={config.sector}
-                onChange={(e) => setConfig({ ...config, sector: e.target.value })}
-                className="input input-bordered w-full"
-                required
-              />
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '4px' }}>Secteur</label>
+              <input type="text" placeholder="Ex: Tech, Finance, Santé..." value={config.sector}
+                onChange={(e) => setConfig({ ...config, sector: e.target.value })} required
+                style={{ width: '100%', padding: '8px 12px', fontSize: '14px', border: '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827' }} />
             </div>
           </div>
 
-          {/* Interview type */}
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text">Type d'entretien</span>
-            </label>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>Type d'entretien</label>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
               {interviewTypes.map((type) => {
                 const isLocked = plan === 'free' && type.value !== 'technique';
+                const isSelected = config.interviewType === type.value;
                 return (
-                  <button
-                    key={type.value}
-                    type="button"
-                    disabled={isLocked}
+                  <button key={type.value} type="button" disabled={isLocked}
                     onClick={() => !isLocked && setConfig({ ...config, interviewType: type.value })}
-                    className={`border-2 rounded-xl p-4 text-left transition-all relative ${
-                      config.interviewType === type.value
-                        ? 'border-primary bg-primary/5'
-                        : isLocked
-                        ? 'border-base-200 bg-base-100 opacity-60 cursor-not-allowed'
-                        : 'border-base-300 hover:border-base-content/30'
-                    }`}
-                  >
+                    style={{
+                      border: isSelected ? '1.5px solid #534AB7' : isLocked ? '0.5px solid #E5E7EB' : '0.5px solid #D1D5DB',
+                      borderRadius: '10px', padding: '14px', textAlign: 'left', cursor: isLocked ? 'not-allowed' : 'pointer',
+                      background: isSelected ? '#F5F3FF' : isLocked ? '#F9FAFB' : '#fff',
+                      opacity: isLocked ? 0.6 : 1, position: 'relative',
+                    }}>
                     {isLocked && (
-                      <span className="absolute top-2 right-2 badge badge-ghost badge-xs gap-1">
-                        <Lock className="w-3 h-3" /> Pro
+                      <span style={{ position: 'absolute', top: '6px', right: '6px', display: 'inline-flex', alignItems: 'center', gap: '2px', fontSize: '10px', fontWeight: 500, padding: '1px 6px', borderRadius: '99px', background: '#F3F4F6', color: '#6B7280' }}>
+                        <IconLock style={{ width: '10px', height: '10px' }} /> Pro
                       </span>
                     )}
-                    <h3 className="font-bold">{type.label}</h3>
-                    <p className="text-sm text-base-content/60 mt-1">{type.desc}</p>
+                    <p style={{ fontWeight: 600, fontSize: '14px', margin: 0 }}>{type.label}</p>
+                    <p style={{ fontSize: '12px', color: '#6B7280', margin: '4px 0 0' }}>{type.desc}</p>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Difficulty */}
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text">Difficulté</span>
-            </label>
-            <div className="flex gap-2">
-              {difficulties.map((d) => (
-                <button
-                  key={d.value}
-                  type="button"
-                  onClick={() => setConfig({ ...config, difficulty: d.value })}
-                  className={`btn flex-1 ${
-                    config.difficulty === d.value ? 'btn-primary' : 'btn-outline'
-                  }`}
-                >
-                  {d.label}
-                </button>
-              ))}
+          <div>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>Difficulté</label>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              {difficulties.map((d) => {
+                const isSelected = config.difficulty === d.value;
+                return (
+                  <button key={d.value} type="button" onClick={() => setConfig({ ...config, difficulty: d.value })}
+                    style={{
+                      flex: 1, padding: '8px 16px', fontSize: '13px', fontWeight: 500, borderRadius: '8px', cursor: 'pointer',
+                      border: isSelected ? 'none' : '0.5px solid #D1D5DB',
+                      background: isSelected ? '#534AB7' : 'transparent', color: isSelected ? '#fff' : 'inherit',
+                    }}>
+                    {d.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Questions & Timer */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Nombre de questions</span>
-              </label>
-              <input
-                type="range"
-                min={1}
-                max={20}
-                value={config.nbQuestions}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '4px' }}>Nombre de questions</label>
+              <input type="range" min={1} max={20} value={config.nbQuestions}
                 onChange={(e) => setConfig({ ...config, nbQuestions: Number(e.target.value) })}
-                className="range range-primary range-sm"
-              />
-              <span className="text-sm text-center mt-1">{config.nbQuestions} questions</span>
+                style={{ width: '100%' }} />
+              <p style={{ fontSize: '13px', textAlign: 'center', marginTop: '4px', color: '#6B7280' }}>{config.nbQuestions} questions</p>
             </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Timer (minutes)</span>
-              </label>
-              <input
-                type="range"
-                min={0}
-                max={60}
-                step={5}
-                value={config.timerMinutes}
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '4px' }}>Timer (minutes)</label>
+              <input type="range" min={0} max={60} step={5} value={config.timerMinutes}
                 onChange={(e) => setConfig({ ...config, timerMinutes: Number(e.target.value) })}
-                className="range range-primary range-sm"
-              />
-              <span className="text-sm text-center mt-1">
+                style={{ width: '100%' }} />
+              <p style={{ fontSize: '13px', textAlign: 'center', marginTop: '4px', color: '#6B7280' }}>
                 {config.timerMinutes === 0 ? 'Pas de limite' : `${config.timerMinutes} min`}
-              </span>
+              </p>
             </div>
           </div>
 
           {quotaBlocked ? (
-            <div className="card bg-gradient-to-br from-primary/5 to-brand-blue/5 border-2 border-primary/20">
-              <div className="card-body items-center text-center py-8">
-                <div className="p-3 bg-primary/10 rounded-full mb-4">
-                  <Crown className="w-8 h-8 text-primary" />
-                </div>
-                <h3 className="text-xl font-bold">Limite mensuelle atteinte</h3>
-                <p className="text-sm text-base-content/60 mt-2 max-w-sm">
-                  Tu as utilisé tes 3 entretiens gratuits ce mois-ci. Passe à Pro pour des entretiens illimités et des fonctionnalités avancées.
-                </p>
-                <Link href="/#pricing" className="btn btn-primary mt-6">
-                  Voir les offres Pro
-                </Link>
+            <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.5rem', textAlign: 'center' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#EEEDFE', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
+                <IconCrownFilled style={{ width: '20px', height: '20px', color: '#534AB7' }} />
               </div>
+              <p style={{ fontSize: '15px', fontWeight: 500, margin: '0 0 2px' }}>Limite mensuelle atteinte</p>
+              <p style={{ fontSize: '12px', color: '#6B7280', lineHeight: 1.5, marginBottom: '12px' }}>
+                Tu as utilisé tes 3 entretiens gratuits ce mois-ci. Passe à Pro pour des entretiens illimités.
+              </p>
+              <Link href="/#pricing" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', textDecoration: 'none' }}>
+                Voir les offres Pro
+              </Link>
             </div>
-          ) : error && <div className="alert alert-error text-sm py-2">{error}</div>}
+          ) : error && <div style={{ background: '#FCEBEB', color: '#791F1F', fontSize: '13px', padding: '8px 12px', borderRadius: '8px', border: '0.5px solid #FCA5A5' }}>{error}</div>}
 
-          <button type="submit" className="btn btn-primary btn-lg w-full">
-            Commencer l'entretien
+          <button type="submit" style={{ width: '100%', padding: '10px 16px', fontSize: '14px', fontWeight: 500, borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: 'pointer' }}>
+            Commencer l&apos;entretien
           </button>
         </div>
       </form>

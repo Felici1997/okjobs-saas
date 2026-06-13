@@ -2,7 +2,7 @@
 
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
-import { Key, Code, BookOpen, ArrowRight } from 'lucide-react';
+import { IconKey, IconCode, IconBook, IconArrowRight } from '@tabler/icons-react';
 
 const endpoints = [
   {
@@ -83,7 +83,7 @@ export default function ApiDocsPage() {
         <section className="py-16">
           <div className="max-w-5xl mx-auto px-6">
             <div className="flex items-center gap-3 mb-2">
-              <Code className="w-8 text-primary" />
+              <IconCode className="w-8 text-primary" />
               <h1 className="text-4xl font-bold">API Publique</h1>
             </div>
             <p className="text-base-content/60 mt-2 mb-8">
@@ -93,7 +93,7 @@ export default function ApiDocsPage() {
             <div className="card bg-base-100 shadow-sm mb-8">
               <div className="card-body">
                 <h2 className="card-title flex items-center gap-2">
-                  <Key className="w-5 text-primary" />
+                  <IconKey className="w-5 text-primary" />
                   Authentification
                 </h2>
                 <p className="text-sm text-base-content/60 mt-2">
@@ -112,7 +112,7 @@ export default function ApiDocsPage() {
             <div className="card bg-base-100 shadow-sm mb-8">
               <div className="card-body">
                 <h2 className="card-title flex items-center gap-2">
-                  <BookOpen className="w-5 text-primary" />
+                  <IconBook className="w-5 text-primary" />
                   Endpoints
                 </h2>
                 <div className="overflow-x-auto mt-4">
@@ -197,9 +197,9 @@ export default function ApiDocsPage() {
 
             <div className="text-center mt-8">
               <a href="/settings" className="btn btn-primary">
-                <Key className="w-4" />
+                <IconKey className="w-4" />
                 Générer une clé API
-                <ArrowRight className="w-4" />
+                <IconArrowRight className="w-4" />
               </a>
             </div>
           </div>

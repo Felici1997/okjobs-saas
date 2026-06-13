@@ -38,14 +38,16 @@ body {
     scrollbar-width: none;
 }
 
-/* ===== LANDING PAGE — styles sur mesure ===== */
-
-/* CTA section - fond quadrillé */
-.cta-grid {
-  background-image:
-    linear-gradient(rgba(0,159,225,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,159,225,0.04) 1px, transparent 1px);
-  background-size: 60px 60px;
+/* ===== LANDING PAGE — SIGNAL BLUE ===== */
+.signal {
+  color: #009fe1;
+}
+.signal-bg {
+  background: #009fe1;
+  color: #fff;
+}
+.signal-border {
+  border-color: #009fe1;
 }
 
 /* Animation fade-in au scroll */
@@ -102,6 +104,30 @@ body {
   transition: opacity 0.4s ease-out, transform 0.4s ease-out;
 }
 
+/* Stagger children pour les grilles */
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+.stagger-children.visible > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+.stagger-children.visible > *:nth-child(1) { transition-delay: 0s; }
+.stagger-children.visible > *:nth-child(2) { transition-delay: 0.08s; }
+.stagger-children.visible > *:nth-child(3) { transition-delay: 0.16s; }
+.stagger-children.visible > *:nth-child(4) { transition-delay: 0.24s; }
+
+/* Hover lift card */
+.hover-lift {
+  transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
+}
+.hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+
 /* Progress bar animation */
 .progress-fill {
   transition: width 1s linear;
@@ -119,7 +145,18 @@ body {
   animation: pulse-width 8s ease-in-out infinite 2s;
 }
 .animate-line-3 {
-  animation: pulse-width 7s ease-in-out infinite 4s;
+  animation: pulse-width 6s ease-in-out infinite 4s;
+}
+
+/* Section reveal — slide in depuis le bas */
+.section-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.section-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Curseur clignotant pour le typing */
@@ -130,7 +167,21 @@ body {
 .typing-cursor::after {
   content: '\2502';
   animation: blink 0.8s step-end infinite;
-  @apply ml-0.5 text-brand-blue;
+  @apply ml-0.5;
+  color: #009fe1;
+}
+
+/* Grid subtle mouvant pour hero */
+@keyframes grid-shift {
+  0% { background-position: 0 0; }
+  100% { background-position: 60px 60px; }
+}
+.hero-grid-bg {
+  background-image:
+    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: grid-shift 30s linear infinite;
 }
 
 /* ===== STICKY CTA MOBILE ===== */
@@ -141,4 +192,8 @@ body {
 .sticky-cta-mobile {
   @apply fixed bottom-0 left-0 right-0 z-40 lg:hidden;
   animation: slide-up 0.3s ease-out;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

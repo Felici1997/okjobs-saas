@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
-import { Mail, MessageSquare, Send } from 'lucide-react';
+import { IconMail, IconMessage2, IconSend } from '@tabler/icons-react';
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
@@ -30,7 +30,7 @@ export default function ContactPage() {
               <div>
                 {sent ? (
                   <div className="alert alert-success">
-                    <Mail className="w-5" />
+                    <IconMail className="w-5" />
                     <span>Message envoyé ! Nous vous répondrons rapidement.</span>
                   </div>
                 ) : (
@@ -48,7 +48,7 @@ export default function ContactPage() {
                       <textarea className="textarea textarea-bordered h-32" required />
                     </div>
                     <button type="submit" className="btn btn-primary w-full">
-                      <Send className="w-4" />
+                      <IconSend className="w-4" />
                       Envoyer
                     </button>
                   </form>
@@ -58,7 +58,7 @@ export default function ContactPage() {
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Mail className="w-5 text-primary" />
+                    <IconMail className="w-5 text-primary" />
                   </div>
                   <div>
                     <h3 className="font-bold">Email</h3>
@@ -67,7 +67,7 @@ export default function ContactPage() {
                 </div>
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <MessageSquare className="w-5 text-primary" />
+                    <IconMessage2 className="w-5 text-primary" />
                   </div>
                   <div>
                     <h3 className="font-bold">Chat</h3>

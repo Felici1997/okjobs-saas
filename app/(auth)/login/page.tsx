@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { signInSchema } from '@/lib/validations/auth';
-import { Eye, EyeOff, LogIn } from 'lucide-react';
+import { IconEye, IconEyeOff, IconLogin } from '@tabler/icons-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -82,7 +82,7 @@ export default function LoginPage() {
                   onClick={() => setShowPwd(!showPwd)}
                   className="absolute right-3 top-1/2 -translate-y-1/2"
                 >
-                  {showPwd ? <EyeOff className="w-4" /> : <Eye className="w-4" />}
+                  {showPwd ? <IconEyeOff className="w-4" /> : <IconEye className="w-4" />}
                 </button>
               </div>
             </div>
@@ -95,7 +95,7 @@ export default function LoginPage() {
               {loading ? (
                 <span className="loading loading-spinner loading-sm" />
               ) : (
-                <LogIn className="w-4" />
+                <IconLogin className="w-4" />
               )}
               Se connecter
             </button>

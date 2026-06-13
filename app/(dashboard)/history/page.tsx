@@ -5,14 +5,14 @@ import { useAuth } from '@/lib/contexts/auth-context';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import {
-  History,
-  TrendingUp,
-  Code,
-  Users,
-  MessageSquare,
-  CheckCircle2,
-  Target,
-} from 'lucide-react';
+  IconHistory,
+  IconTrendingUp,
+  IconCode,
+  IconUsersGroup,
+  IconMessages,
+  IconCircleCheckFilled,
+  IconFocus2,
+} from '@tabler/icons-react';
 
 type Session = {
   id: string;
@@ -91,174 +91,157 @@ export default function HistoryPage() {
       : undefined;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div style={{ maxWidth: '960px', margin: '0 auto' }} className="space-y-5">
       <div>
-        <h1 className="text-3xl font-bold">Historique</h1>
-        <p className="text-base-content/60 mt-1">
+        <h1 style={{ fontSize: '22px', fontWeight: 500, margin: 0 }}>Historique</h1>
+        <p style={{ fontSize: '14px', color: '#6B7280', margin: '4px 0 0' }}>
           Consultez vos entretiens passés et suivez votre progression
         </p>
       </div>
 
-      {/* Stats cards */}
       {sessions.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="bg-base-100 border border-base-200 rounded-xl p-4">
-            <History className="w-5 text-base-content/40 float-right" />
-            <p className="text-xs text-base-content/60">Total entretiens</p>
-            <p className="text-2xl font-medium mt-0.5">{sessions.length}</p>
-            <p className="text-[11px] text-base-content/40 mt-1">ce mois-ci</p>
+          <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1rem' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#EEEDFE', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px' }}>
+              <IconHistory style={{ width: '16px', height: '16px', color: '#534AB7' }} />
+            </div>
+            <p style={{ fontSize: '12px', color: '#6B7280', margin: 0 }}>Total entretiens</p>
+            <p style={{ fontSize: '22px', fontWeight: 500, color: '#111827', margin: '2px 0' }}>{sessions.length}</p>
+            <p style={{ fontSize: '11px', color: '#9CA3AF', margin: 0 }}>ce mois-ci</p>
           </div>
-          <div className="bg-base-100 border border-base-200 rounded-xl p-4">
-            <TrendingUp className="w-5 text-base-content/40 float-right" />
-            <p className="text-xs text-base-content/60">Score moyen</p>
-            <p className="text-2xl font-medium mt-0.5" style={{ color: avgScoreColor ?? undefined }}>
+          <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1rem' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#FAEEDA', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px' }}>
+              <IconTrendingUp style={{ width: '16px', height: '16px', color: '#854F0B' }} />
+            </div>
+            <p style={{ fontSize: '12px', color: '#6B7280', margin: 0 }}>Score moyen</p>
+            <p style={{ fontSize: '22px', fontWeight: 500, color: avgScoreColor ?? '#9CA3AF', margin: '2px 0' }}>
               {avgScore !== null ? `${avgScore}%` : '—'}
             </p>
-            <p className="text-[11px] text-base-content/40 mt-1">
+            <p style={{ fontSize: '11px', color: '#9CA3AF', margin: 0 }}>
               sur {scoredSessions.length} entretien{scoredSessions.length > 1 ? 's' : ''} noté{scoredSessions.length > 1 ? 's' : ''}
             </p>
           </div>
-          <div className="bg-base-100 border border-base-200 rounded-xl p-4">
-            <CheckCircle2 className="w-5 text-base-content/40 float-right" />
-            <p className="text-xs text-base-content/60">Terminés</p>
-            <p className="text-2xl font-medium mt-0.5 text-[#27500A]">{completedCount}</p>
-            <p className="text-[11px] text-base-content/40 mt-1">
+          <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1rem' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#E1F5EE', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px' }}>
+              <IconCircleCheckFilled style={{ width: '16px', height: '16px', color: '#085041' }} />
+            </div>
+            <p style={{ fontSize: '12px', color: '#6B7280', margin: 0 }}>Terminés</p>
+            <p style={{ fontSize: '22px', fontWeight: 500, color: '#27500A', margin: '2px 0' }}>{completedCount}</p>
+            <p style={{ fontSize: '11px', color: '#9CA3AF', margin: 0 }}>
               {inProgressCount} en cours · {abandonedCount} abandonné{abandonedCount > 1 ? 's' : ''}
             </p>
           </div>
-          <div className="bg-base-100 border border-base-200 rounded-xl p-4">
-            <Target className="w-5 text-base-content/40 float-right" />
-            <p className="text-xs text-base-content/60">Meilleur score</p>
-            <p className="text-2xl font-medium mt-0.5" style={{ color: '#3C3489' }}>
+          <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1rem' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#EEEDFE', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px' }}>
+              <IconFocus2 style={{ width: '16px', height: '16px', color: '#3C3489' }} />
+            </div>
+            <p style={{ fontSize: '12px', color: '#6B7280', margin: 0 }}>Meilleur score</p>
+            <p style={{ fontSize: '22px', fontWeight: 500, color: '#3C3489', margin: '2px 0' }}>
               {bestScore !== null ? `${bestScore}%` : '—'}
             </p>
-            <p className="text-[11px] text-base-content/40 mt-1 truncate">
+            <p style={{ fontSize: '11px', color: '#9CA3AF', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {bestContext || '—'}
             </p>
           </div>
         </div>
       )}
 
-      {/* Sessions list */}
       {sessions.length === 0 ? (
-        <div className="card bg-base-100 shadow-sm">
-          <div className="card-body items-center text-center py-16">
-            <History className="w-16 text-base-content/20 mb-4" />
-            <h3 className="text-lg font-medium">Aucun entretien pour le moment</h3>
-            <p className="text-base-content/60 mt-1 mb-6">
-              Lancez votre premier entretien simulé
-            </p>
-            <Link href="/interview" className="btn btn-primary">
-              Commencer
-            </Link>
+        <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '3rem 1.5rem', textAlign: 'center' }}>
+          <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: '#EEEDFE', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem' }}>
+            <IconHistory style={{ width: '26px', height: '26px', color: '#3C3489' }} />
           </div>
+          <p style={{ fontSize: '15px', fontWeight: 500, color: '#111827', marginBottom: '4px' }}>Aucun entretien pour le moment</p>
+          <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '1.25rem', lineHeight: 1.6 }}>
+            Lancez votre premier entretien simulé
+          </p>
+          <Link href="/interview" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', textDecoration: 'none' }}>
+            Commencer
+          </Link>
         </div>
       ) : (
-        <div className="bg-base-100 border border-base-200 rounded-xl overflow-hidden">
+        <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', overflow: 'hidden' }}>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-base-200">
-                <th className="px-4 py-3 text-left text-[11px] font-medium text-base-content/50 uppercase tracking-wider w-[130px]">Date</th>
-                <th className="px-4 py-3 text-left text-[11px] font-medium text-base-content/50 uppercase tracking-wider">Poste</th>
-                <th className="px-4 py-3 text-left text-[11px] font-medium text-base-content/50 uppercase tracking-wider w-[140px]">Type</th>
-                <th className="px-4 py-3 text-left text-[11px] font-medium text-base-content/50 uppercase tracking-wider w-[120px]">Difficulté</th>
-                <th className="px-4 py-3 text-left text-[11px] font-medium text-base-content/50 uppercase tracking-wider w-[130px]">Score</th>
-                <th className="px-4 py-3 text-left text-[11px] font-medium text-base-content/50 uppercase tracking-wider w-[120px]">Statut</th>
-                <th className="px-4 py-3 text-right w-[70px]"></th>
+              <tr style={{ borderBottom: '0.5px solid #E5E7EB' }}>
+                <th className="px-4 py-3 text-left text-[11px] font-medium" style={{ color: '#9CA3AF', letterSpacing: '0.05em', width: '130px' }}>Date</th>
+                <th className="px-4 py-3 text-left text-[11px] font-medium" style={{ color: '#9CA3AF', letterSpacing: '0.05em' }}>Poste</th>
+                <th className="px-4 py-3 text-left text-[11px] font-medium" style={{ color: '#9CA3AF', letterSpacing: '0.05em', width: '140px' }}>Type</th>
+                <th className="px-4 py-3 text-left text-[11px] font-medium" style={{ color: '#9CA3AF', letterSpacing: '0.05em', width: '120px' }}>Difficulté</th>
+                <th className="px-4 py-3 text-left text-[11px] font-medium" style={{ color: '#9CA3AF', letterSpacing: '0.05em', width: '130px' }}>Score</th>
+                <th className="px-4 py-3 text-left text-[11px] font-medium" style={{ color: '#9CA3AF', letterSpacing: '0.05em', width: '120px' }}>Statut</th>
+                <th className="px-4 py-3 text-right" style={{ width: '70px' }}></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-base-200">
+            <tbody style={{ borderTop: '0.5px solid #E5E7EB' }}>
               {sessions.map((s) => (
-                <tr key={s.id} className="hover:bg-base-200/50 transition-colors">
-                  <td className="px-4 py-3.5 text-xs text-base-content/50">
+                <tr key={s.id} className="hover" style={{ transition: 'background 0.1s' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = '#F9FAFB'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}>
+                  <td className="px-4 py-3.5 text-xs" style={{ color: '#9CA3AF' }}>
                     {new Date(s.started_at).toLocaleDateString('fr-FR', {
                       day: '2-digit',
                       month: 'short',
                       year: 'numeric',
                     })}
                   </td>
-                  <td className="px-4 py-3.5 font-medium">{s.job_title}</td>
+                  <td className="px-4 py-3.5 font-medium" style={{ color: '#111827' }}>{s.job_title}</td>
                   <td className="px-4 py-3.5">
-                    <span className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full ${
-                      s.interview_type === 'technique'
-                        ? 'bg-blue-100 text-blue-800'
-                        : s.interview_type === 'comportemental'
-                          ? 'bg-purple-100 text-purple-800'
-                          : 'bg-emerald-100 text-emerald-800'
-                    }`}>
-                      {s.interview_type === 'technique' ? <Code className="w-3 h-3" /> :
-                       s.interview_type === 'comportemental' ? <Users className="w-3 h-3" /> :
-                       <MessageSquare className="w-3 h-3" />}
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 500,
+                      padding: '2px 10px', borderRadius: '99px',
+                      background: s.interview_type === 'technique' ? '#E6F1FB' : s.interview_type === 'comportemental' ? '#EEEDFE' : '#E1F5EE',
+                      color: s.interview_type === 'technique' ? '#0C447C' : s.interview_type === 'comportemental' ? '#3C3489' : '#085041',
+                    }}>
+                      {s.interview_type === 'technique' ? <IconCode style={{ width: '12px', height: '12px' }} /> :
+                       s.interview_type === 'comportemental' ? <IconUsersGroup style={{ width: '12px', height: '12px' }} /> :
+                       <IconMessages style={{ width: '12px', height: '12px' }} />}
                       {typeLabels[s.interview_type] || s.interview_type}
                     </span>
                   </td>
                   <td className="px-4 py-3.5">
-                    <span className="inline-flex items-center gap-1.5 text-sm capitalize">
-                      <span className={`w-[7px] h-[7px] rounded-full ${
-                        s.difficulty === 'debutant' || s.difficulty === 'débutant'
-                          ? 'bg-green-600'
-                          : s.difficulty === 'intermediaire' || s.difficulty === 'intermédiaire'
-                            ? 'bg-amber-600'
-                            : 'bg-red-500'
-                      }`} />
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', textTransform: 'capitalize' }}>
+                      <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: s.difficulty === 'debutant' || s.difficulty === 'débutant' ? '#639922' : s.difficulty === 'intermediaire' || s.difficulty === 'intermédiaire' ? '#BA7517' : '#E24B4A' }} />
                       {s.difficulty}
                     </span>
                   </td>
                   <td className="px-4 py-3.5">
                     {s.score !== null ? (
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 h-[4px] rounded-full bg-base-300 overflow-hidden">
-                          <div
-                            className="h-full rounded-full transition-all"
-                            style={{
-                              width: `${s.score}%`,
-                              backgroundColor:
-                                s.score >= 50 ? '#639922' : s.score >= 20 ? '#BA7517' : '#E24B4A',
-                            }}
-                          />
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ flex: 1, height: '4px', borderRadius: '99px', background: '#E5E7EB', overflow: 'hidden' }}>
+                          <div style={{ height: '100%', borderRadius: '99px', width: `${s.score}%`, backgroundColor: s.score >= 50 ? '#639922' : s.score >= 20 ? '#BA7517' : '#E24B4A' }} />
                         </div>
-                        <span
-                          className="text-xs font-medium min-w-[32px] text-right"
-                          style={{
-                            color:
-                              s.score >= 50 ? '#27500A' : s.score >= 20 ? '#633806' : '#791F1F',
-                          }}
-                        >
+                        <span style={{ fontSize: '12px', fontWeight: 500, minWidth: '32px', textAlign: 'right', color: s.score >= 50 ? '#27500A' : s.score >= 20 ? '#633806' : '#791F1F' }}>
                           {s.score}%
                         </span>
                       </div>
                     ) : (
-                      <span className="text-base-content/30 text-xs">—</span>
+                      <span style={{ color: '#D1D5DB', fontSize: '12px' }}>—</span>
                     )}
                   </td>
                   <td className="px-4 py-3.5">
-                    <span className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full ${
-                      s.status === 'completed'
-                        ? 'bg-green-100 text-green-800'
-                        : s.status === 'in_progress'
-                          ? 'bg-amber-100 text-amber-800'
-                          : s.status === 'timeout'
-                            ? 'bg-red-100 text-red-800'
-                            : 'bg-gray-100 text-gray-600'
-                    }`}>
-                      {s.status === 'completed' && <CheckCircle2 className="w-3 h-3" />}
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 500,
+                      padding: '2px 10px', borderRadius: '99px',
+                      background: s.status === 'completed' ? '#E1F5EE' : s.status === 'in_progress' ? '#FAEEDA' : s.status === 'timeout' ? '#FCEBEB' : '#F3F4F6',
+                      color: s.status === 'completed' ? '#085041' : s.status === 'in_progress' ? '#633806' : s.status === 'timeout' ? '#791F1F' : '#6B7280',
+                    }}>
+                      {s.status === 'completed' && <IconCircleCheckFilled style={{ width: '12px', height: '12px' }} />}
                       {statusLabels[s.status] || s.status}
                     </span>
                   </td>
                   <td className="px-4 py-3.5 text-right">
                     {s.status === 'completed' || s.status === 'in_progress' ? (
                       <Link
-                        href={
-                          s.status === 'completed'
-                            ? `/interview/${s.id}/feedback`
-                            : `/interview/${s.id}`
-                        }
-                        className="text-xs border border-base-300 rounded-md px-2.5 py-1 text-base-content/60 hover:bg-base-200 hover:text-base-content transition-colors inline-block"
+                        href={s.status === 'completed' ? `/interview/${s.id}/feedback` : `/interview/${s.id}`}
+                        style={{ fontSize: '12px', border: '0.5px solid #D1D5DB', borderRadius: '6px', padding: '4px 10px', color: '#6B7280', textDecoration: 'none', transition: 'background 0.1s, color 0.1s' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = '#F3F4F6'; e.currentTarget.style.color = '#111827'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#6B7280'; }}
                       >
                         Voir
                       </Link>
                     ) : (
-                      <span className="text-xs border border-base-200 rounded-md px-2.5 py-1 text-base-content/20 cursor-not-allowed inline-block">
+                      <span style={{ fontSize: '12px', border: '0.5px solid #E5E7EB', borderRadius: '6px', padding: '4px 10px', color: '#D1D5DB', cursor: 'not-allowed', display: 'inline-block' }}>
                         Voir
                       </span>
                     )}
