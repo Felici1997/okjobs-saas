@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { verifyApiKey, logApiUsage } from '@/lib/api/auth';
 import { jsonResponse, errorResponse } from '@/lib/api/response';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { generateChatCompletion } from '@/lib/openrouter/client';
+import { generateChatCompletion, OpenRouterMessage } from '@/lib/openrouter/client';
 
 export async function POST(
   request: NextRequest,
@@ -77,7 +77,7 @@ Règles :
 - Ne répète pas les questions déjà posées.
 - Si le candidat a déjà répondu à ${session.nb_questions} questions, annonce que l'entretien est terminé et dis "MERCI_AVOIR_TERMINE".`;
 
-  const conversation: { role: string; content: string }[] = [
+    const conversation: OpenRouterMessage[] = [
     { role: 'system', content: systemPrompt },
   ];
 
