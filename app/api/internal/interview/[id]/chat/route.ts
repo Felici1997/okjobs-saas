@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { generateChatCompletion } from '@/lib/openrouter/client';
+import { generateChatCompletion, OpenRouterMessage } from '@/lib/openrouter/client';
 
 export async function POST(
   request: NextRequest,
@@ -77,7 +77,7 @@ Règles :
 - Ne répète pas les questions déjà posées.
 - Continue jusqu'à ce que je t'arrête. Ne termine pas l'entretien toi-même.`;
 
-    const conversation: { role: string; content: string }[] = [
+    const conversation: OpenRouterMessage[] = [
       { role: 'system', content: systemPrompt },
     ];
 
