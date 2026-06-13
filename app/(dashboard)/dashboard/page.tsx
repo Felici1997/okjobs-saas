@@ -9,11 +9,8 @@ import {
   FileText,
   MessageSquare,
   TrendingUp,
-  ArrowRight,
-  Plus,
   LayoutDashboard,
   ChevronRight,
-  CheckCircle2,
   Crown,
 } from 'lucide-react';
 

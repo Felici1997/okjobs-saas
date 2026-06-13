@@ -1,14 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { signUpSchema } from '@/lib/validations/auth';
 import { Eye, EyeOff, UserPlus } from 'lucide-react';
 
 export default function RegisterPage() {
-  const router = useRouter();
   const { signUp } = useAuth();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');

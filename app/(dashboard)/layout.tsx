@@ -10,10 +10,8 @@ import {
   MessageSquare,
   History,
   Key,
-  Settings,
   LogOut,
   Menu,
-  X,
   ChevronRight,
 } from 'lucide-react';
 
