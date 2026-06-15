@@ -1,14 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
-import { IconArrowRight, IconCheck } from '@tabler/icons-react';
+import { useEffect, useRef } from 'react';
+import { IconArrowRight, IconBolt, IconUsers, IconBrain, IconMessage, IconChartBar, IconPlayerPlay } from '@tabler/icons-react';
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
-import AnimatedCounter from '@/app/components/AnimatedCounter';
-import { useHeroSimulation } from '@/lib/hooks/useHeroSimulation';
 
-function FadeInSection({ children, delay = 0, scale = false }: { children: React.ReactNode; delay?: number; scale?: boolean }) {
+const IMG_PLATFORM = 'https://kaxspqevfobiocbqkgkl.supabase.co/storage/v1/object/public/imagesLandingPage/Plateforme_apercu.png';
+const IMG_ELECTRICIAN = 'https://kaxspqevfobiocbqkgkl.supabase.co/storage/v1/object/public/imagesLandingPage/AI%20generated%20Skilled%20Male%20Electrician%20Fixing%20Wiring,%20AI%20Generated.jpg';
+const IMG_FAITHFUL = 'https://kaxspqevfobiocbqkgkl.supabase.co/storage/v1/object/public/imagesLandingPage/Faithful,%20Fearing%20God.jpg';
+const IMG_STUDENTS = 'https://kaxspqevfobiocbqkgkl.supabase.co/storage/v1/object/public/imagesLandingPage/Two%20university%20students.jpg';
+
+function FadeInSection({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = ref.current;
@@ -25,416 +28,292 @@ function FadeInSection({ children, delay = 0, scale = false }: { children: React
     observer.observe(el);
     return () => observer.disconnect();
   }, [delay]);
-  return <div ref={ref} className={scale ? 'fade-in-scale' : 'fade-in'}>{children}</div>;
+  return <div ref={ref} className="fade-in">{children}</div>;
 }
 
-function StaggerTitle({ text, highlight }: { text: string; highlight: string }) {
-  const ref = useRef<HTMLHeadingElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const spans = el.querySelectorAll('.stagger-title');
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          spans.forEach((s, i) => {
-            setTimeout(() => s.classList.add('visible'), i * 60);
-          });
-          observer.unobserve(el);
-        }
-      },
-      { threshold: 0.3 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  const words = text.split(' ');
+function Stat({ value, label }: { value: string; label: string }) {
   return (
-    <h1 ref={ref} className="text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight leading-[0.9]">
-      {words.map((w, i) => (
-        <span key={i} className="stagger-title inline-block mr-3">{w}</span>
-      ))}
-      <br />
-      <span className="signal stagger-title inline-block">{highlight}</span>
-    </h1>
+    <div className="text-center">
+      <p className="text-4xl md:text-5xl font-bold tracking-tight" style={{ color: '#009fe1' }}>{value}</p>
+      <p className="mt-1 text-sm text-black/50">{label}</p>
+    </div>
   );
 }
 
-function SimulationCard() {
-  const { typedText, isTyping, displayTime, timerColor, progress, isComplete } = useHeroSimulation();
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = cardRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add('visible');
-          observer.unobserve(el);
-        }
-      },
-      { threshold: 0.3 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
+function TestimonialQuote({ text, name, role }: { text: string; name: string; role: string }) {
   return (
-    <div ref={cardRef} className="hero-card-enter bg-white border border-black/5 p-8">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold" style={{ background: 'rgba(0,159,225,0.1)', color: '#009fe1' }}>IA</div>
-        <div>
-          <p className="text-sm font-semibold">Recruteur · Technique</p>
-          <p className="text-xs text-black/40 font-mono">Question 3/5</p>
-        </div>
-      </div>
-      <div className="pl-4 mb-6 min-h-[4rem]">
-        <p className={`text-sm leading-relaxed text-black/80 ${isTyping ? 'typing-cursor' : ''}`}>
-          &ldquo;{typedText}&rdquo;
-        </p>
-      </div>
-      <div className="flex gap-1 mb-2">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="flex-1 h-px bg-black/10">
-            <div
-              className="h-full progress-fill"
-              style={{
-                background: 'rgba(0,159,225,0.6)',
-                width: i === 2 ? `${isComplete ? Math.min(100, progress) : 0}%` : i === 0 ? '100%' : (isComplete ? `${Math.min(100, progress)}%` : '0%'),
-                transitionDuration: i === 1 ? '0.3s' : '0.3s',
-              }}
-            />
-          </div>
-        ))}
-      </div>
-      <div className="flex justify-between text-xs font-mono">
-        <span className="signal">Progression</span>
-        <span className={timerColor}>{isComplete ? displayTime : '--:--'}</span>
+    <div className="p-8 bg-white border border-black/5 h-full flex flex-col justify-between">
+      <p className="text-sm leading-relaxed text-black/70 mb-6">&ldquo;{text}&rdquo;</p>
+      <div className="border-t border-black/5 pt-4">
+        <p className="text-sm font-semibold">{name}</p>
+        <p className="text-xs text-black/40 mt-0.5">{role}</p>
       </div>
     </div>
   );
 }
 
+const stats = [
+  { value: '10k+', label: 'Candidats entraînés' },
+  { value: '70%', label: "Taux d'entretien réussi" },
+  { value: '3x', label: 'Plus de confiance' },
+  { value: '98%', label: 'Satisfaction' },
+];
+
 const features = [
   {
-    number: '01', title: 'Trois modes d\'entretien',
-    desc: 'Technique, comportemental, motivationnel. Chaque mode utilise un prompt IA spécialisé qui pose des questions adaptées à votre profil et au poste visé.',
+    title: "Le plus grand réseau d'entraîneurs IA",
+    desc: "Notre IA a analysé des milliers d'entretiens réels. Chaque session est calibrée sur votre secteur, votre poste et votre niveau d'expérience.",
+    stat: { value: '5 000+', label: 'Scénarios d\'entretien' },
   },
   {
-    number: '02', title: 'Feedback après chaque réponse',
-    desc: 'L\'IA analyse votre réponse en temps réel. En fin d\'entretien, un rapport détaille vos forces, vos axes d\'amélioration et une note globale.',
+    title: 'Une IA qui apprend à vous connaître',
+    desc: "À chaque réponse, notre IA affine sa compréhension de votre profil. Elle adapte les questions pour vous pousser là où vous en avez besoin.",
+    stat: { value: '85%', label: 'Questions personnalisées' },
   },
   {
-    number: '03', title: 'Timer paramétrable',
-    desc: 'De 5 à 60 minutes. L\'entretien s\'arrête automatiquement quand le temps est écoulé — comme en conditions réelles.',
+    title: 'Des résultats en jours, pas en mois',
+    desc: "3 à 5 sessions suffisent pour gagner en aisance. Nos utilisateurs décrochent un entretien réel en moyenne 2 semaines après leur première session.",
+    stat: { value: '2 sem.', label: 'Pour décrocher un entretien' },
   },
   {
-    number: '04', title: 'CV importé ou créé sur place',
-    desc: 'Importez votre CV au format PDF ou saisissez vos informations directement. L\'IA s\'en sert pour personnaliser chaque question.',
+    title: 'Accompagnement dédié',
+    desc: "Votre coach IA est disponible 24/7. Recevez des feedbacks détaillés après chaque réponse et suivez votre progression dans le temps.",
+    stat: { value: '24/7', label: 'Disponible' },
   },
 ];
 
-export default function LandingPage() {
-  const [faqOpen, setFaqOpen] = useState<number | null>(null);
+const testimonials = [
+  {
+    text: "Après trois entraînements sur Okjobs, j'étais parfaitement préparée. Le feedback m'a aidé à corriger mes points faibles avant l'entretien réel.",
+    name: 'Sophie Martin',
+    role: 'Développeuse Full Stack',
+  },
+  {
+    text: "Le mode chronométré m'a permis d'être calibré le jour J. Je savais exactement combien de temps prendre pour chaque réponse.",
+    name: 'Thomas Dubois',
+    role: 'Chef de produit',
+  },
+  {
+    text: "La personnalisation des questions est bluffante. On croirait vraiment parler à un recruteur qui connaît mon CV et mon secteur.",
+    name: 'Léa Petit',
+    role: 'Consultante',
+  },
+];
 
+const recruiterFeatures = [
+  { icon: IconBrain, title: 'IA pour vous préparer', desc: 'Notre IA génère des questions sur mesure à partir de votre CV et du poste visé.' },
+  { icon: IconUsers, title: 'Coach personnel virtuel', desc: 'Un professeur particulier disponible à toute heure, sans rendez-vous.' },
+  { icon: IconChartBar, title: 'Statistiques détaillées', desc: 'Suivez votre progression : scores, temps de réponse, domaines à améliorer.' },
+  { icon: IconMessage, title: 'Feedback en temps réel', desc: 'Recevez une analyse de chaque réponse avec des conseils concrets.' },
+];
+
+export default function LandingPage() {
   return (
     <>
       <Navbar />
       <main>
 
         {/* ===== HERO ===== */}
-        <section className="relative min-h-[85vh] flex items-center pt-24 pb-16 overflow-hidden">
+        <section className="relative min-h-[90vh] flex items-center pt-24 pb-16 overflow-hidden">
           <div className="absolute inset-0 hero-grid-bg" />
-          <div className="max-w-7xl mx-auto px-8 w-full">
+          <div className="max-w-7xl mx-auto px-6 w-full relative z-10">
             <div className="grid lg:grid-cols-12 gap-12 items-center">
-              <div className="lg:col-span-7">
-                <StaggerTitle text="Décrochez le poste" highlight="sans stresser l'entretien." />
-                <p className="mt-6 text-lg md:text-xl text-black/60 max-w-lg leading-relaxed">
-                  Entraînez-vous avec une IA qui pose les vraies questions, en conditions réelles avec timer.
-                  Recevez un feedback après chaque réponse. Arrivez prêt le jour J.
+              <div className="lg:col-span-6">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-black/[0.03] border border-black/5 text-xs font-semibold tracking-wider text-black/50 mb-8">
+                  <IconBolt className="w-3.5" style={{ color: '#009fe1' }} />
+                  L&apos;IA au service de votre carrière
+                </div>
+                <h1 className="text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight leading-[0.9]">
+                  Décrochez le poste<br />
+                  <span style={{ color: '#009fe1' }}>sans stresser l&apos;entretien.</span>
+                </h1>
+                <p className="mt-6 text-lg md:text-xl text-black/50 max-w-lg leading-relaxed">
+                  Des milliers de candidats utilisent notre IA pour se préparer aux entretiens.
+                  Simulations réalistes, feedback instantané, progression garantie.
                 </p>
                 <div className="mt-10 flex flex-col sm:flex-row gap-4">
                   <Link
                     href="/register"
-                    className="group inline-flex items-center gap-3 px-8 py-4 text-white text-sm font-semibold tracking-wide transition-colors active:scale-[0.97]" style={{ background: '#009fe1' }}
+                    className="group inline-flex items-center gap-3 px-8 py-4 text-white text-sm font-semibold tracking-wide transition-colors"
+                    style={{ background: '#009fe1' }}
                     onMouseEnter={(e) => { e.currentTarget.style.background = '#0088cc'; }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = '#009fe1'; }}
                   >
-                    Essayer gratuitement
+                    Commencer gratuitement
                     <IconArrowRight className="w-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                   <Link
-                    href="/#features"
+                    href="/register"
                     className="inline-flex items-center gap-2 px-8 py-4 border border-black/10 text-sm font-medium tracking-wide hover:bg-black/[0.02] transition-colors"
                   >
-                    Voir les fonctionnalités
+                    Voir une démo
+                    <IconPlayerPlay className="w-4" />
                   </Link>
                 </div>
-                <p className="mt-6 text-xs signal font-mono tracking-wider">
-                  3 entretiens gratuits par mois · Sans carte bancaire
+                <p className="mt-6 text-xs text-black/30 font-mono tracking-wider">
+                  3 entretiens gratuits par mois &middot; Sans carte bancaire
                 </p>
               </div>
-              <div className="lg:col-span-5 hidden lg:block">
-                <SimulationCard />
+              <div className="lg:col-span-6 hidden lg:flex justify-center">
+                <img src={IMG_PLATFORM} alt="Aperçu de la plateforme Okjobs" className="w-full max-w-lg rounded-lg shadow-2xl" />
               </div>
             </div>
           </div>
         </section>
 
-        {/* ===== SOCIAL PROOF ===== */}
-        <section className="bg-black/[0.02] border-t border-black/5">
-          <div className="max-w-5xl mx-auto px-8 py-8">
-            <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 text-sm">
-              <span className="signal font-semibold text-lg">+500</span>
-              <span className="text-black/30 hidden sm:inline">·</span>
-              <span className="text-black/60 font-medium">candidats entraînés</span>
-              <span className="text-black/30 hidden sm:inline">·</span>
-              <span className="text-black/60 font-medium">Note 4.8/5</span>
-              <span className="text-black/30 hidden sm:inline">·</span>
-              <span className="text-sm font-mono signal tracking-wider">Sans carte bancaire</span>
+        {/* ===== TESTIMONIAL QUOTE ===== */}
+        <section className="border-t border-black/5">
+          <div className="max-w-5xl mx-auto px-6 py-20 md:py-28">
+            <p className="text-2xl md:text-3xl lg:text-4xl font-semibold leading-[1.2] text-black/80 text-center max-w-4xl mx-auto">
+              &ldquo;J&apos;ai testé des tonnes d&apos;outils de préparation. Rien ne vaut la personnalisation d&apos;Okjobs. L&apos;IA adapte chaque question à mon profil et mon secteur.&rdquo;
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-4">
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-black/5 flex items-center justify-center text-sm font-semibold" style={{ color: '#009fe1' }}>SM</div>
+              <div>
+                <p className="text-sm font-semibold">Sophie Martin</p>
+                <p className="text-xs text-black/40">Développeuse Full Stack</p>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* ===== PROBLEM ===== */}
-        <section className="py-24 md:py-32">
-          <div className="max-w-5xl mx-auto px-8">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-              <FadeInSection>
-                <h2 className="text-3xl md:text-5xl font-semibold tracking-tight max-w-lg leading-[1.05]">
-                  Vous stressez à l&apos;idée<br />
-                  <span className="signal">de l&apos;entretien ?</span>
-                </h2>
-              </FadeInSection>
-              <FadeInSection>
-                  <div className="space-y-4">
-                    <div className="p-6 bg-black/[0.02] border border-black/5 hover-lift">
-                      <p className="font-semibold mb-1">Questions génériques</p>
-                      <p className="text-sm text-black/50 leading-relaxed">Les recruteurs ne posent pas les mêmes questions que les simulateurs basiques. Vous arrivez démuni.</p>
-                    </div>
-                    <div className="p-6 bg-black/[0.02] border border-black/5 hover-lift">
-                      <p className="font-semibold mb-1">Pas de vrai feedback</p>
-                      <p className="text-sm text-black/50 leading-relaxed">Vous répondez, mais personne ne vous dit ce qui cloche. Impossible de progresser sans retour.</p>
-                    </div>
-                    <div className="p-6 bg-black/[0.02] border border-black/5 hover-lift">
-                      <p className="font-semibold mb-1">Le stress du chrono</p>
-                      <p className="text-sm text-black/50 leading-relaxed">En entretien réel, le temps file. Sans entraînement au timer, vous perdez vos moyens.</p>
-                    </div>
-                  </div>
-              </FadeInSection>
-            </div>
-          </div>
-        </section>
-
-        {/* ===== FEATURES ===== */}
-        <section id="features" className="py-24 md:py-32 bg-black/[0.02]">
-          <div className="max-w-5xl mx-auto px-8">
-            <FadeInSection>
-              <h2 className="text-3xl md:text-5xl font-semibold tracking-tight max-w-2xl leading-[1.05]">
-                Pas de questions génériques.<br />
-                <span className="signal">Des questions pour vous.</span>
-              </h2>
-            </FadeInSection>
-            <div className="grid md:grid-cols-2 gap-px bg-black/10 mt-16">
-              {features.map((f, i) => (
-                <FadeInSection key={f.number} delay={i * 80}>
-                  <div className="p-8 bg-white h-full hover-lift">
-                    <p className="text-xs font-mono signal font-semibold mb-4">{f.number}</p>
-                    <h3 className="text-lg font-semibold mb-3">{f.title}</h3>
-                    <p className="text-sm text-black/50 leading-relaxed">{f.desc}</p>
-                  </div>
+        {/* ===== STATS ===== */}
+        <section className="border-t border-black/5 bg-black/[0.02]">
+          <div className="max-w-5xl mx-auto px-6 py-16">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
+              {stats.map((s) => (
+                <FadeInSection key={s.label}>
+                  <Stat {...s} />
                 </FadeInSection>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ===== HOW IT WORKS ===== */}
-        <section id="how-it-works" className="py-24 md:py-32">
-          <div className="max-w-5xl mx-auto px-8">
-            <FadeInSection>
-              <h2 className="text-3xl md:text-5xl font-semibold tracking-tight leading-[1.05]">
-                Trois minutes.<br />
-                <span className="signal">Trois étapes.</span>
-              </h2>
-            </FadeInSection>
-            <div className="grid md:grid-cols-3 gap-12 md:gap-16 mt-16">
-              {[
-                { n: '01', t: 'Inscription', d: 'Créez votre compte en 30 secondes. Aucune carte bancaire.' },
-                { n: '02', t: 'Votre profil', d: 'Importez votre CV ou renseignez votre secteur. L\'IA adapte les questions.' },
-                { n: '03', t: 'Entraînement', d: 'Répondez, recevez du feedback, recommencez. Vous progressez à chaque session.' },
-              ].map((step, i) => (
-                <FadeInSection key={step.n} delay={i * 100}>
-                  <div>
-                    <p className="text-5xl md:text-6xl font-bold text-black/5 mb-4 select-none leading-none">
-                      <AnimatedCounter to={parseInt(step.n)} />
-                    </p>
-                    <h3 className="text-xl font-semibold mb-2">{step.t}</h3>
-                    <p className="text-sm text-black/50 leading-relaxed">{step.d}</p>
-                  </div>
-                </FadeInSection>
-              ))}
+        {/* ===== FEATURES (stacked) ===== */}
+        <section id="features" className="border-t border-black/5">
+          {features.map((f, i) => (
+            <div key={f.title} className={`${i % 2 === 0 ? '' : 'bg-black/[0.02]'} border-b border-black/5`}>
+              <div className="max-w-6xl mx-auto px-6 py-20 md:py-28">
+                <div className={`flex flex-col md:flex-row gap-16 items-center ${i % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}>
+                  <FadeInSection delay={i * 50}><div className="flex-1">
+                    <img src={i % 2 === 0 ? IMG_STUDENTS : IMG_ELECTRICIAN} alt="" className="w-full rounded-lg shadow-lg" />
+                  </div></FadeInSection>
+                  <FadeInSection delay={i * 50}><div className="flex-1">
+                    <p className="text-xs font-mono font-semibold tracking-wider mb-4" style={{ color: '#009fe1' }}>0{i + 1}</p>
+                    <h2 className="text-3xl md:text-4xl font-semibold tracking-tight leading-[1.1] mb-6">{f.title}</h2>
+                    <p className="text-base text-black/50 leading-relaxed mb-8">{f.desc}</p>
+                    <div className="inline-flex items-center gap-3 px-5 py-3 bg-black/[0.02] border border-black/5">
+                      <span className="text-2xl font-bold" style={{ color: '#009fe1' }}>{f.stat.value}</span>
+                      <span className="text-sm text-black/50">{f.stat.label}</span>
+                    </div>
+                  </div></FadeInSection>
+                </div>
+              </div>
             </div>
-          </div>
+          ))}
         </section>
 
         {/* ===== TESTIMONIALS ===== */}
-        <section className="py-24 md:py-32 bg-black/[0.02]">
-          <div className="max-w-5xl mx-auto px-8">
+        <section className="border-t border-black/5 bg-black/[0.02]">
+          <div className="max-w-6xl mx-auto px-6 py-20 md:py-28">
             <FadeInSection>
-              <h2 className="text-3xl md:text-5xl font-semibold tracking-tight leading-[1.05]">
-                Ils ont préparé<br />
-                <span className="signal">et décroché.</span>
+              <p className="text-xs font-mono font-semibold tracking-wider text-center mb-4" style={{ color: '#009fe1' }}>TÉMOIGNAGES</p>
+              <h2 className="text-3xl md:text-5xl font-semibold tracking-tight text-center leading-[1.05]">
+                Ne nous croyez pas sur parole
               </h2>
             </FadeInSection>
             <div className="grid md:grid-cols-3 gap-px bg-black/10 mt-16">
-              {[
-                {
-                  text: 'Après trois entraînements, j\'étais parfaitement préparée. Le feedback m\'a aidé à corriger mes points faibles avant l\'entretien réel.',
-                  name: 'Sophie Martin', role: 'Développeuse Full Stack',
-                },
-                {
-                  text: 'Le timer m\'a permis d\'être calibré le jour J. Je savais exactement combien de temps prendre pour chaque réponse. Un vrai game changer.',
-                  name: 'Thomas Dubois', role: 'Chef de produit',
-                },
-                {
-                  text: 'L\'entretien comportemental est d\'un réalisme bluffant. Les questions STAR m\'ont préparée aux méthodes des grands cabinets.',
-                  name: 'Léa Petit', role: 'Consultante',
-                },
-              ].map((t) => (
+              {testimonials.map((t) => (
                 <FadeInSection key={t.name}>
-                  <div className="p-8 bg-white h-full border-b md:border-b-0 border-black/5 hover-lift">
-                    <p className="text-sm leading-relaxed text-black/70 mb-6">
-                      &ldquo;{t.text}&rdquo;
-                    </p>
-                    <div className="border-t border-black/5 pt-4">
-                      <p className="text-sm font-semibold">{t.name}</p>
-                      <p className="text-xs font-mono text-black/40 mt-0.5">{t.role}</p>
-                    </div>
-                  </div>
+                  <TestimonialQuote {...t} />
                 </FadeInSection>
               ))}
+            </div>
+            <div className="mt-12 text-center">
+              <Link
+                href="/register"
+                className="inline-flex items-center gap-2 text-sm font-semibold transition-colors"
+                style={{ color: '#009fe1' }}
+              >
+                Lire plus d&apos;histoires
+                <IconArrowRight className="w-4" />
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* ===== PRICING ===== */}
-        <section id="pricing" className="py-24 md:py-32">
-          <div className="max-w-5xl mx-auto px-8">
-            <FadeInSection>
-              <h2 className="text-3xl md:text-5xl font-semibold tracking-tight leading-[1.05]">
-                Gratuit pour commencer.<br />
-                <span className="signal">Pro pour aller loin.</span>
-              </h2>
-            </FadeInSection>
-            <div className="grid md:grid-cols-3 gap-px bg-black/10 mt-16">
-              {[
-                {
-                  name: 'Gratuit', price: '0 FCFA', tag: 'Pour découvrir',
-                  items: ['3 entretiens/mois', 'CV intégré', '1 mode d\'entretien', 'Feedback basique'],
-                  cta: 'Créer un compte', href: '/register',
-                },
-                {
-                  name: 'Pro', price: '2 500 FCFA / AN', tag: 'Recommandé',
-                  items: ['Entretiens illimités', 'Questions personnalisées avancées', 'Feedback détaillé', 'Import PDF', 'Statistiques', 'Support prioritaire'],
-                  cta: 'Essayer 7 jours', href: '/register', featured: true,
-                },
-                {
-                  name: 'Enterprise', price: 'Sur mesure', tag: 'Pour les équipes',
-                  items: ['Tout le Pro', 'API dédiée', 'Dashboard admin', 'Comptes en lot', 'Support téléphonique'],
-                  cta: 'Nous contacter', href: '/contact',
-                },
-              ].map((p) => (
-                <FadeInSection key={p.name}>
-                  <div className={`p-8 bg-white h-full flex flex-col hover-lift ${p.featured ? 'border-2 signal-border shadow-sm' : 'border-b md:border-b-0 border-black/5'}`}>
-                    <div>
-                      <p className="text-xs font-mono text-black/40 tracking-wider uppercase mb-1">{p.tag}</p>
-                      <p className="text-xl font-semibold mb-1">{p.name}</p>
-                      <p className="text-3xl font-semibold mb-8">{p.price}</p>
-                      <ul className="space-y-3 mb-10">
-                        {p.items.map((item) => (
-                          <li key={item} className="flex items-start gap-3 text-sm text-black/60">
-                            <IconCheck className="w-3.5 mt-0.5 shrink-0 signal" />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="mt-auto">
-                      <Link
-                        href={p.href}
-                        className={`block text-center py-3 text-sm font-medium tracking-wide transition-colors ${p.featured ? 'text-white' : 'border border-black/10 hover:bg-black/[0.02]'}`}
-                        style={p.featured ? { background: '#009fe1' } : {}}
-                        onMouseEnter={(e) => { if (p.featured) e.currentTarget.style.background = '#0088cc'; }}
-                        onMouseLeave={(e) => { if (p.featured) e.currentTarget.style.background = '#009fe1'; }}
-                      >
-                        {p.cta}
-                      </Link>
-                    </div>
+        {/* ===== RECRUITERS SECTION (secondary) ===== */}
+        <section className="border-t border-black/5">
+          <div className="max-w-6xl mx-auto px-6 py-20 md:py-28">
+            <div className="grid lg:grid-cols-12 gap-12 items-start">
+              <div className="lg:col-span-5">
+                <FadeInSection>
+                  <p className="text-xs font-mono font-semibold tracking-wider mb-4" style={{ color: '#009fe1' }}>POUR LES RECRUTEURS</p>
+                  <h2 className="text-3xl md:text-5xl font-semibold tracking-tight leading-[1.05]">
+                    Le moyen le plus rapide<br />
+                    <span style={{ color: '#009fe1' }}>d&apos;évaluer vos candidats</span>
+                  </h2>
+                  <p className="mt-6 text-base text-black/50 leading-relaxed">
+                    Proposez des entretiens techniques, comportementaux et motivationnels à vos candidats.
+                    Recevez des rapports détaillés sur leurs performances.
+                  </p>
+                  <div className="mt-8">
+                    <Link
+                      href="/register"
+                      className="group inline-flex items-center gap-3 px-6 py-3 text-white text-sm font-semibold tracking-wide transition-colors"
+                      style={{ background: '#009fe1' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = '#0088cc'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = '#009fe1'; }}
+                    >
+                      Essayer gratuitement
+                      <IconArrowRight className="w-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
                   </div>
                 </FadeInSection>
-              ))}
+              </div>
+              <div className="lg:col-span-7">
+                <div className="grid sm:grid-cols-2 gap-px bg-black/10">
+                  {recruiterFeatures.map((rf) => {
+                    const Icon = rf.icon;
+                    return (
+                      <FadeInSection key={rf.title}>
+                        <div className="p-8 bg-white h-full hover-lift">
+                          <Icon className="w-6 mb-4" style={{ color: '#009fe1' }} />
+                          <h3 className="text-base font-semibold mb-2">{rf.title}</h3>
+                          <p className="text-sm text-black/50 leading-relaxed">{rf.desc}</p>
+                        </div>
+                      </FadeInSection>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* ===== FAQ ===== */}
-        <section className="py-24 md:py-32 bg-black/[0.02]">
-          <div className="max-w-3xl mx-auto px-8">
-            <FadeInSection>
-              <h2 className="text-3xl md:text-5xl font-semibold tracking-tight leading-[1.05]">
-                Questions fréquentes
-              </h2>
-            </FadeInSection>
-            <div className="mt-16 space-y-px bg-black/10">
-              {[
-                { q: 'C\'est vraiment gratuit ?', r: 'Oui. 3 entretiens complets par mois, sans limite de durée. Pas de carte bancaire.' },
-                { q: 'L\'IA connaît-elle mon secteur ?', r: 'Vous indiquez le poste et le secteur visés. Si vous importez votre CV, l\'IA l\'analyse pour des questions ultra-ciblées.' },
-                { q: 'Puis-je choisir la durée ?', r: 'Oui. Pas de timer pour un entraînement tranquille, ou un timer de 5 à 60 minutes avec arrêt automatique.' },
-                { q: 'Mes données sont-elles protégées ?', r: 'Chiffrement en transit, aucun partage. Vous pouvez supprimer vos données à tout moment depuis votre compte.' },
-              ].map((f, i) => (
-                <FadeInSection key={i}>
-                  <button
-                    onClick={() => setFaqOpen(faqOpen === i ? null : i)}
-                    className={`w-full flex items-center justify-between p-6 bg-white text-left transition-colors ${faqOpen === i ? 'bg-black/[0.01]' : 'hover:bg-black/[0.01]'}`}
-                  >
-                    <span className="text-sm font-medium">{f.q}</span>
-                    <span className={`text-xs font-mono signal transition-transform ${faqOpen === i ? 'rotate-45' : ''}`}>+</span>
-                  </button>
-                  {faqOpen === i && (
-                    <div className="px-6 pb-6 bg-white">
-                      <p className="text-sm text-black/50 leading-relaxed">{f.r}</p>
-                    </div>
-                  )}
-                </FadeInSection>
-              ))}
-            </div>
-          </div>
+        {/* ===== VISUAL BREAK ===== */}
+        <section className="h-64 md:h-80 overflow-hidden border-t border-black/5">
+          <img src={IMG_FAITHFUL} alt="" className="w-full h-full object-cover" loading="lazy" />
         </section>
 
         {/* ===== FINAL CTA ===== */}
-        <section className="py-32 relative overflow-hidden" style={{ background: '#009fe1' }}>
+        <section className="relative overflow-hidden border-t border-black/5" style={{ background: '#009fe1' }}>
           <div className="absolute inset-0 hero-grid-bg" style={{ opacity: 0.08 }} />
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute h-px bg-white/20 top-1/4 left-1/4 animate-line-1" />
-            <div className="absolute h-px bg-white/20 top-2/3 right-1/3 animate-line-2" />
-            <div className="absolute h-px bg-white/20 bottom-1/4 left-1/3 animate-line-3" />
-          </div>
-          <div className="max-w-4xl mx-auto px-8 text-center relative z-10">
-            <FadeInSection scale>
+          <div className="max-w-4xl mx-auto px-6 py-24 md:py-32 text-center relative z-10">
+            <FadeInSection>
+              <p className="text-xs font-mono font-semibold tracking-wider text-white/60 mb-4">COMMENCER</p>
               <h2 className="text-4xl md:text-6xl font-semibold tracking-tight leading-[1.05] text-white">
                 Le meilleur moment<br />
-                <span className="text-white">c&apos;était hier.</span>
+                c&apos;était hier.
               </h2>
-              <p className="mt-6 text-sm text-white/60 max-w-md mx-auto leading-relaxed">
+              <p className="mt-6 text-base text-white/60 max-w-md mx-auto leading-relaxed">
                 14 jours d&apos;essai gratuit, sans carte bancaire. Rejoignez les candidats qui préparent leurs entretiens avec Okjobs.
               </p>
               <div className="mt-10">
                 <Link
                   href="/register"
-                  className="group inline-flex items-center gap-3 px-8 py-4 bg-white text-sm font-bold tracking-wide hover:bg-white/90 transition-colors active:scale-[0.97]"
+                  className="group inline-flex items-center gap-3 px-8 py-4 bg-white text-sm font-bold tracking-wide hover:bg-white/90 transition-colors"
                   style={{ color: '#009fe1' }}
                 >
                   Commencer mon essai gratuit
@@ -451,7 +330,8 @@ export default function LandingPage() {
       <div className="sticky-cta-mobile">
         <Link
           href="/register"
-          className="flex items-center justify-center gap-3 px-6 py-4 text-white font-semibold tracking-wide transition-colors" style={{ background: '#009fe1' }}
+          className="flex items-center justify-center gap-3 px-6 py-4 text-white font-semibold tracking-wide transition-colors"
+          style={{ background: '#009fe1' }}
           onMouseEnter={(e) => { e.currentTarget.style.background = '#0088cc'; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = '#009fe1'; }}
         >

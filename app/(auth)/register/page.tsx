@@ -40,96 +40,65 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-base-200 flex items-center justify-center">
-      <div className="card bg-base-100 w-full max-w-md shadow-xl">
-        <div className="card-body p-8">
-          <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold italic">
-              <img src="/logo.png" alt="Okjobs" className="h-8 w-auto" />
-            </h1>
-            <p className="text-base-content/60 mt-2">Créez votre compte</p>
+    <div style={{ minHeight: '100vh', background: '#F9FAFB', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
+      <div style={{ width: '100%', maxWidth: '400px', background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.5rem' }}>
+        <div style={{ marginBottom: '1.25rem' }}>
+          <Link href="/">
+            <img src="https://kaxspqevfobiocbqkgkl.supabase.co/storage/v1/object/public/imagesLandingPage/Logo.jpg" alt="Okjobs" style={{ height: '28px', width: 'auto' }} />
+          </Link>
+          <p style={{ fontSize: '14px', color: '#6B7280', margin: '8px 0 0' }}>Créez votre compte</p>
+        </div>
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '4px' }}>Nom complet</label>
+            <input type="text" placeholder="Jean Dupont" value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              style={{ width: '100%', padding: '8px 12px', fontSize: '14px', border: '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827' }}
+              autoComplete="name" />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Nom complet</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Jean Dupont"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="input input-bordered w-full"
-                autoComplete="name"
-              />
-            </div>
+          <div>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '4px' }}>Email</label>
+            <input type="email" placeholder="vous@exemple.com" value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={{ width: '100%', padding: '8px 12px', fontSize: '14px', border: '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827' }}
+              autoComplete="email" />
+          </div>
 
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Email</span>
-              </label>
-              <input
-                type="email"
-                placeholder="vous@exemple.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="input input-bordered w-full"
-                autoComplete="email"
-              />
+          <div>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '4px' }}>Mot de passe</label>
+            <div style={{ position: 'relative' }}>
+              <input type={showPwd ? 'text' : 'password'} placeholder="8 caractères minimum" value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={{ width: '100%', padding: '8px 12px', fontSize: '14px', border: '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827', paddingRight: '36px' }}
+                autoComplete="new-password" />
+              <button type="button" onClick={() => setShowPwd(!showPwd)}
+                style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9CA3AF', padding: '4px' }}>
+                {showPwd ? <IconEyeOff style={{ width: '16px', height: '16px' }} /> : <IconEye style={{ width: '16px', height: '16px' }} />}
+              </button>
             </div>
+          </div>
 
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Mot de passe</span>
-              </label>
-              <div className="relative">
-                <input
-                  type={showPwd ? 'text' : 'password'}
-                  placeholder="8 caractères minimum"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="input input-bordered w-full pr-10"
-                  autoComplete="new-password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPwd(!showPwd)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2"
-                >
-                  {showPwd ? <IconEyeOff className="w-4" /> : <IconEye className="w-4" />}
-                </button>
-              </div>
-            </div>
+          {error && <div style={{ background: '#FCEBEB', color: '#791F1F', fontSize: '13px', padding: '8px 12px', borderRadius: '8px', border: '0.5px solid #FCA5A5' }}>{error}</div>}
+          {success && <div style={{ background: '#E1F5EE', color: '#085041', fontSize: '13px', padding: '8px 12px', borderRadius: '8px', border: '0.5px solid #A7D4C5' }}>{success}</div>}
 
-            {error && (
-              <div className="alert alert-error text-sm py-2">{error}</div>
+          <button type="submit" disabled={loading}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', padding: '10px 16px', fontSize: '14px', fontWeight: 500, borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1 }}>
+            {loading ? (
+              <span style={{ width: '16px', height: '16px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', animation: 'spin 0.6s linear infinite', display: 'inline-block' }} />
+            ) : (
+              <IconUserPlus style={{ width: '16px', height: '16px' }} />
             )}
-            {success && (
-              <div className="alert alert-success text-sm py-2">{success}</div>
-            )}
+            Créer mon compte
+          </button>
+        </form>
 
-            <button type="submit" className="btn btn-primary w-full" disabled={loading}>
-              {loading ? (
-                <span className="loading loading-spinner loading-sm" />
-              ) : (
-                <IconUserPlus className="w-4" />
-              )}
-              Créer mon compte
-            </button>
-          </form>
-
-          <div className="text-center mt-4 text-sm">
-            Déjà un compte ?{' '}
-            <Link href="/login" className="link link-primary">
-              Se connecter
-            </Link>
-          </div>
-          <div className="text-center mt-2 text-xs">
-            <Link href="/" className="link link-secondary">
-              ← Retour à l&apos;accueil
-            </Link>
-          </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', marginTop: '1rem' }}>
+          <span style={{ fontSize: '13px', color: '#6B7280' }}>
+            Déjà un compte ? <Link href="/login" style={{ color: '#534AB7', textDecoration: 'underline' }}>Se connecter</Link>
+          </span>
+          <Link href="/" style={{ fontSize: '12px', color: '#9CA3AF', textDecoration: 'none' }}>← Retour à l'accueil</Link>
         </div>
       </div>
     </div>

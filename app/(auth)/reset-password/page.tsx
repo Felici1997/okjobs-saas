@@ -37,54 +37,43 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-base-200 flex items-center justify-center">
-      <div className="card bg-base-100 w-full max-w-md shadow-xl">
-        <div className="card-body p-8">
-          <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold italic">
-              <img src="/logo.png" alt="Okjobs" className="h-8 w-auto" />
-            </h1>
-            <p className="text-base-content/60 mt-2">Réinitialisation du mot de passe</p>
+    <div style={{ minHeight: '100vh', background: '#F9FAFB', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
+      <div style={{ width: '100%', maxWidth: '400px', background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.5rem' }}>
+        <div style={{ marginBottom: '1.25rem' }}>
+          <Link href="/">
+            <img src="https://kaxspqevfobiocbqkgkl.supabase.co/storage/v1/object/public/imagesLandingPage/Logo.jpg" alt="Okjobs" style={{ height: '28px', width: 'auto' }} />
+          </Link>
+          <p style={{ fontSize: '14px', color: '#6B7280', margin: '8px 0 0' }}>Réinitialisation du mot de passe</p>
+        </div>
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '4px' }}>Email</label>
+            <input type="email" placeholder="vous@exemple.com" value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={{ width: '100%', padding: '8px 12px', fontSize: '14px', border: '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827' }}
+              autoComplete="email" />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Email</span>
-              </label>
-              <input
-                type="email"
-                placeholder="vous@exemple.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="input input-bordered w-full"
-                autoComplete="email"
-              />
-            </div>
+          {error && <div style={{ background: '#FCEBEB', color: '#791F1F', fontSize: '13px', padding: '8px 12px', borderRadius: '8px', border: '0.5px solid #FCA5A5' }}>{error}</div>}
+          {success && <div style={{ background: '#E1F5EE', color: '#085041', fontSize: '13px', padding: '8px 12px', borderRadius: '8px', border: '0.5px solid #A7D4C5' }}>{success}</div>}
 
-            {error && (
-              <div className="alert alert-error text-sm py-2">{error}</div>
+          <button type="submit" disabled={loading}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', padding: '10px 16px', fontSize: '14px', fontWeight: 500, borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1 }}>
+            {loading ? (
+              <span style={{ width: '16px', height: '16px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', animation: 'spin 0.6s linear infinite', display: 'inline-block' }} />
+            ) : (
+              <IconMail style={{ width: '16px', height: '16px' }} />
             )}
-            {success && (
-              <div className="alert alert-success text-sm py-2">{success}</div>
-            )}
+            Envoyer
+          </button>
+        </form>
 
-            <button type="submit" className="btn btn-primary w-full" disabled={loading}>
-              {loading ? (
-                <span className="loading loading-spinner loading-sm" />
-              ) : (
-                <IconMail className="w-4" />
-              )}
-              Envoyer
-            </button>
-          </form>
-
-          <div className="text-center mt-4">
-            <Link href="/login" className="link link-primary text-sm flex items-center justify-center gap-1">
-              <IconArrowLeft className="w-3" />
-              Retour à la connexion
-            </Link>
-          </div>
+        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+          <Link href="/login" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#534AB7', textDecoration: 'underline' }}>
+            <IconArrowLeft style={{ width: '14px', height: '14px' }} />
+            Retour à la connexion
+          </Link>
         </div>
       </div>
     </div>
