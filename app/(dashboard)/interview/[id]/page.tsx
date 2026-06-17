@@ -5,7 +5,7 @@ import { useAuth } from '@/lib/contexts/auth-context';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter, useParams } from 'next/navigation';
 import Timer from '@/app/components/Timer';
-import { IconSend, IconLoader2, IconSquare, IconMessage2, IconUser } from '@tabler/icons-react';
+import { IconSend, IconLoader2, IconSquare, IconMessage2, IconUser, IconAlertCircle } from '@tabler/icons-react';
 
 type ChatMessage = {
   id: string;
@@ -168,11 +168,11 @@ export default function InterviewChatPage() {
   const tc = typeColors[session.interview_type] || { bg: '#F3F4F6', text: '#6B7280' };
 
   return (
-    <div style={{ maxWidth: '720px', margin: '0 auto', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 6rem)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: '#fff', border: '0.5px solid #E5E7EB', borderBottom: 'none', borderRadius: '12px 12px 0 0' }}>
-        <div>
-          <h1 style={{ fontSize: '15px', fontWeight: 600, margin: 0 }}>{session.job_title}</h1>
-          <div style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
+    <div style={{ maxWidth: '720px', margin: '0 auto', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 6rem)' }} className="px-0 md:px-0">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between" style={{ padding: '12px 16px', background: '#fff', border: '0.5px solid #E5E7EB', borderBottom: 'none', borderRadius: '12px 12px 0 0', gap: '10px' }}>
+        <div className="min-w-0 flex-1">
+          <h1 style={{ fontSize: '15px', fontWeight: 600, margin: 0 }} className="truncate">{session.job_title}</h1>
+          <div className="flex flex-wrap" style={{ gap: '6px', marginTop: '6px' }}>
             <span style={{ fontSize: '12px', fontWeight: 500, padding: '1px 8px', borderRadius: '99px', background: tc.bg, color: tc.text }}>
               {typeLabel[session.interview_type] || session.interview_type}
             </span>
@@ -181,17 +181,17 @@ export default function InterviewChatPage() {
             </span>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div className="flex items-center justify-between sm:justify-end" style={{ gap: '10px' }}>
           <Timer minutes={session.timer_minutes} onExpired={handleTimerExpired} />
           <button onClick={handleEnd} disabled={sending}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 500, padding: '6px 12px', borderRadius: '6px', border: '0.5px solid #FCA5A5', background: '#FCEBEB', color: '#791F1F', cursor: 'pointer' }}>
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 500, padding: '6px 12px', borderRadius: '6px', border: '0.5px solid #FCA5A5', background: '#FCEBEB', color: '#791F1F', cursor: 'pointer', whiteSpace: 'nowrap' }}>
             <IconSquare style={{ width: '12px', height: '12px' }} />
             Terminer
           </button>
         </div>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: '16px', background: '#fff', borderLeft: '0.5px solid #E5E7EB', borderRight: '0.5px solid #E5E7EB', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '12px 12px 16px', background: '#fff', borderLeft: '0.5px solid #E5E7EB', borderRight: '0.5px solid #E5E7EB', display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {messages.length === 0 && !sending && (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#9CA3AF' }}>
             <p>Préparation de l&apos;entretien...</p>
@@ -206,7 +206,7 @@ export default function InterviewChatPage() {
               </div>
             )}
             <div style={{
-              maxWidth: '75%', padding: '10px 14px', fontSize: '14px', lineHeight: 1.5,
+              maxWidth: '85%', padding: '10px 14px', fontSize: '14px', lineHeight: 1.5,
               borderRadius: msg.role === 'user' ? '12px 12px 4px 12px' : '12px 12px 12px 4px',
               background: msg.role === 'user' ? '#534AB7' : '#F3F4F6',
               color: msg.role === 'user' ? '#fff' : '#111827',
@@ -242,7 +242,10 @@ export default function InterviewChatPage() {
           </div>
         )}
 
-        {error && <div style={{ background: '#FCEBEB', color: '#791F1F', fontSize: '13px', padding: '8px 12px', borderRadius: '8px', border: '0.5px solid #FCA5A5' }}>{error}</div>}
+        {error && <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', background: '#FEF2F2', border: '0.5px solid #FECACA', borderRadius: '10px', padding: '10px 12px' }}>
+          <IconAlertCircle style={{ width: '16px', height: '16px', color: '#DC2626', flexShrink: 0, marginTop: '1px' }} />
+          <span style={{ fontSize: '13px', color: '#991B1B', lineHeight: 1.4 }}>{error}</span>
+        </div>}
 
         <div ref={chatEndRef} />
       </div>
@@ -251,11 +254,11 @@ export default function InterviewChatPage() {
         <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '8px', padding: '12px 16px', background: '#fff', border: '0.5px solid #E5E7EB', borderTop: 'none', borderRadius: '0 0 12px 12px' }}>
           <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Votre réponse..."
             disabled={sending} autoFocus
-            style={{ flex: 1, padding: '8px 12px', fontSize: '14px', border: '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827' }} />
+            style={{ flex: 1, padding: '10px 12px', fontSize: '14px', border: '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827' }} />
           <button type="submit" disabled={!input.trim() || sending}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: 'pointer' }}>
-            {sending ? <IconLoader2 className="w-4 animate-spin" /> : <IconSend style={{ width: '14px', height: '14px' }} />}
-            Envoyer
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '10px 16px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: 'pointer' }}>
+            {sending ? <IconLoader2 className="w-4 animate-spin" /> : <IconSend style={{ width: '16px', height: '16px' }} />}
+            <span className="hidden sm:inline">Envoyer</span>
           </button>
         </form>
       )}

@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/contexts/auth-context';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { interviewConfigSchema } from '@/lib/validations/interview';
-import { IconLock, IconCrownFilled } from '@tabler/icons-react';
+import { IconLock, IconCrownFilled, IconAlertCircle } from '@tabler/icons-react';
 import type { InterviewType, Difficulty } from '@/types';
 
 const interviewTypes: { value: InterviewType; label: string; desc: string }[] = [
@@ -42,6 +42,8 @@ export default function InterviewPage() {
     nbQuestions: 5,
     timerMinutes: 0,
   });
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+const clearFieldError = (field: string) => setFieldErrors((prev) => { const next = { ...prev }; delete next[field]; return next; });
   const [quotaBlocked, setQuotaBlocked] = useState(false);
 
   useEffect(() => {
@@ -61,10 +63,16 @@ export default function InterviewPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setFieldErrors({});
 
     const result = interviewConfigSchema.safeParse(config);
     if (!result.success) {
-      setError(result.error.errors[0].message);
+      const errors: Record<string, string> = {};
+      for (const issue of result.error.errors) {
+        const path = issue.path.join('.');
+        if (!errors[path]) errors[path] = issue.message;
+      }
+      setFieldErrors(errors);
       return;
     }
 
@@ -123,33 +131,51 @@ export default function InterviewPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <div>
             <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '4px' }}>CV à utiliser</label>
-            <select value={config.cvId} onChange={(e) => setConfig({ ...config, cvId: e.target.value })}
-              style={{ width: '100%', padding: '8px 12px', fontSize: '14px', border: '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827' }}>
+            <select value={config.cvId} onChange={(e) => { setConfig({ ...config, cvId: e.target.value }); clearFieldError('cvId'); }}
+              style={{ width: '100%', padding: '8px 12px', fontSize: '14px', border: fieldErrors.cvId ? '1.5px solid #DC2626' : '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827' }}>
               <option value="">Pas de CV (questions génériques)</option>
               {cvs.map((cv) => (
                 <option key={cv.id} value={cv.id}>{cv.title}</option>
               ))}
             </select>
+            {fieldErrors.cvId && (
+              <p style={{ display: 'flex', alignItems: 'center', gap: '4px', margin: '4px 0 0', fontSize: '12px', color: '#DC2626' }}>
+                <IconAlertCircle style={{ width: '14px', height: '14px', flexShrink: 0 }} />
+                {fieldErrors.cvId}
+              </p>
+            )}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div className="md:grid md:grid-cols-2 flex flex-col gap-3" style={{ gap: '12px' }}>
             <div>
               <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '4px' }}>Poste visé</label>
               <input type="text" placeholder="Ex: Développeur Full Stack" value={config.jobTitle}
-                onChange={(e) => setConfig({ ...config, jobTitle: e.target.value })} required
-                style={{ width: '100%', padding: '8px 12px', fontSize: '14px', border: '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827' }} />
+                onChange={(e) => { setConfig({ ...config, jobTitle: e.target.value }); if (fieldErrors.jobTitle) clearFieldError('jobTitle'); }} required
+                style={{ width: '100%', padding: '8px 12px', fontSize: '14px', border: fieldErrors.jobTitle ? '1.5px solid #DC2626' : '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827', outline: 'none' }} />
+              {fieldErrors.jobTitle && (
+                <p style={{ display: 'flex', alignItems: 'center', gap: '4px', margin: '4px 0 0', fontSize: '12px', color: '#DC2626' }}>
+                  <IconAlertCircle style={{ width: '14px', height: '14px', flexShrink: 0 }} />
+                  {fieldErrors.jobTitle}
+                </p>
+              )}
             </div>
             <div>
               <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '4px' }}>Secteur</label>
               <input type="text" placeholder="Ex: Tech, Finance, Santé..." value={config.sector}
-                onChange={(e) => setConfig({ ...config, sector: e.target.value })} required
-                style={{ width: '100%', padding: '8px 12px', fontSize: '14px', border: '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827' }} />
+                onChange={(e) => { setConfig({ ...config, sector: e.target.value }); if (fieldErrors.sector) clearFieldError('sector'); }} required
+                style={{ width: '100%', padding: '8px 12px', fontSize: '14px', border: fieldErrors.sector ? '1.5px solid #DC2626' : '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827', outline: 'none' }} />
+              {fieldErrors.sector && (
+                <p style={{ display: 'flex', alignItems: 'center', gap: '4px', margin: '4px 0 0', fontSize: '12px', color: '#DC2626' }}>
+                  <IconAlertCircle style={{ width: '14px', height: '14px', flexShrink: 0 }} />
+                  {fieldErrors.sector}
+                </p>
+              )}
             </div>
           </div>
 
           <div>
             <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>Type d'entretien</label>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+            <div className="grid grid-cols-1 sm:grid-cols-3" style={{ gap: '10px' }}>
               {interviewTypes.map((type) => {
                 const isLocked = plan === 'free' && type.value !== 'technique';
                 const isSelected = config.interviewType === type.value;
@@ -177,7 +203,7 @@ export default function InterviewPage() {
 
           <div>
             <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>Difficulté</label>
-            <div style={{ display: 'flex', gap: '8px' }}>
+            <div className="flex flex-wrap" style={{ gap: '8px' }}>
               {difficulties.map((d) => {
                 const isSelected = config.difficulty === d.value;
                 return (
@@ -194,15 +220,15 @@ export default function InterviewPage() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-            <div>
+          <div className="flex flex-col sm:flex-row" style={{ gap: '12px' }}>
+            <div className="flex-1">
               <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '4px' }}>Nombre de questions</label>
               <input type="range" min={1} max={20} value={config.nbQuestions}
                 onChange={(e) => setConfig({ ...config, nbQuestions: Number(e.target.value) })}
                 style={{ width: '100%' }} />
               <p style={{ fontSize: '13px', textAlign: 'center', marginTop: '4px', color: '#6B7280' }}>{config.nbQuestions} questions</p>
             </div>
-            <div>
+            <div className="flex-1">
               <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '4px' }}>Timer (minutes)</label>
               <input type="range" min={0} max={60} step={5} value={config.timerMinutes}
                 onChange={(e) => setConfig({ ...config, timerMinutes: Number(e.target.value) })}
@@ -226,7 +252,12 @@ export default function InterviewPage() {
                 Voir les offres Pro
               </Link>
             </div>
-          ) : error && <div style={{ background: '#FCEBEB', color: '#791F1F', fontSize: '13px', padding: '8px 12px', borderRadius: '8px', border: '0.5px solid #FCA5A5' }}>{error}</div>}
+          ) : error && (
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', background: '#FEF2F2', border: '0.5px solid #FECACA', borderRadius: '10px', padding: '12px 14px' }}>
+              <IconAlertCircle style={{ width: '18px', height: '18px', color: '#DC2626', flexShrink: 0, marginTop: '1px' }} />
+              <span style={{ fontSize: '13px', color: '#991B1B', lineHeight: 1.4 }}>{error}</span>
+            </div>
+          )}
 
           <button type="submit" style={{ width: '100%', padding: '10px 16px', fontSize: '14px', fontWeight: 500, borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: 'pointer' }}>
             Commencer l&apos;entretien
