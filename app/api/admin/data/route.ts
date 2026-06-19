@@ -38,72 +38,63 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Table non autorisée' }, { status: 403 });
     }
 
-    let query = admin.from(table).select(select, { count: 'exact' });
-
-    const applyFilters = (f: Record<string, unknown>) => {
-      for (const [key, val] of Object.entries(f)) {
-        if (key === 'eq' || key === 'gte' || key === 'lte' || key === 'lt' || key === 'in' || key === 'or') continue;
-        if (typeof val === 'string' && val.startsWith('__range__')) {
-          continue;
-        }
-        (query as ReturnType<typeof query>) = (query as ReturnType<typeof query>).eq(key, val);
-      }
-    };
+    let q: any = admin.from(table).select(select, { count: 'exact' });
 
     if (filters.eq) {
       for (const [col, val] of Object.entries(filters.eq as Record<string, unknown>)) {
-        (query as ReturnType<typeof query>) = (query as ReturnType<typeof query>).eq(col, val);
+        q = q.eq(col, val);
       }
     }
     if (filters.in) {
       for (const [col, vals] of Object.entries(filters.in as Record<string, string[]>)) {
-        (query as ReturnType<typeof query>) = (query as ReturnType<typeof query>).in(col, vals);
+        q = q.in(col, vals);
       }
     }
     if (filters.gte) {
       for (const [col, val] of Object.entries(filters.gte as Record<string, string>)) {
-        (query as ReturnType<typeof query>) = (query as ReturnType<typeof query>).gte(col, val);
+        q = q.gte(col, val);
       }
     }
     if (filters.lte) {
       for (const [col, val] of Object.entries(filters.lte as Record<string, string>)) {
-        (query as ReturnType<typeof query>) = (query as ReturnType<typeof query>).lte(col, val);
+        q = q.lte(col, val);
       }
     }
     if (filters.lt) {
       for (const [col, val] of Object.entries(filters.lt as Record<string, string>)) {
-        (query as ReturnType<typeof query>) = (query as ReturnType<typeof query>).lt(col, val);
+        q = q.lt(col, val);
       }
     }
     if (filters.or) {
-      (query as ReturnType<typeof query>) = (query as ReturnType<typeof query>).or(filters.or as string);
+      q = q.or(filters.or as string);
     }
 
     const structuredKeys = new Set(['eq', 'in', 'gte', 'lte', 'lt', 'or']);
     for (const [key, val] of Object.entries(filters)) {
       if (structuredKeys.has(key)) continue;
       if (key.startsWith('gte:')) {
-        (query as ReturnType<typeof query>) = (query as ReturnType<typeof query>).gte(key.slice(4), val as string);
+        q = q.gte(key.slice(4), val as string);
       } else if (key.startsWith('lte:')) {
-        (query as ReturnType<typeof query>) = (query as ReturnType<typeof query>).lte(key.slice(4), val as string);
+        q = q.lte(key.slice(4), val as string);
       } else if (key.startsWith('lt:')) {
-        (query as ReturnType<typeof query>) = (query as ReturnType<typeof query>).lt(key.slice(3), val as string);
+        q = q.lt(key.slice(3), val as string);
       } else if (key.startsWith('in:')) {
-        (query as ReturnType<typeof query>) = (query as ReturnType<typeof query>).in(key.slice(3), val as string[]);
+        q = q.in(key.slice(3), val as string[]);
       } else {
-        (query as ReturnType<typeof query>) = (query as ReturnType<typeof query>).eq(key, val);
+        q = q.eq(key, val);
       }
     }
+
     for (const order of orders) {
       const { column, ascending = false, nullsFirst } = order;
-      query = (query as ReturnType<typeof query>).order(column, { ascending, nullsFirst });
+      q = q.order(column, { ascending, nullsFirst });
     }
     if (range) {
-      query = (query as ReturnType<typeof query>).range(range.from, range.to);
+      q = q.range(range.from, range.to);
     }
 
     if (method === 'select') {
-      const { data, error, count } = await (query as ReturnType<typeof query>);
+      const { data, error, count } = await q;
       if (error) throw error;
       return NextResponse.json({ data, count });
     }
@@ -123,7 +114,6 @@ export async function POST(request: NextRequest) {
       if (error) throw error;
       return NextResponse.json({ data });
     }
-
     return NextResponse.json({ error: 'Méthode non supportée' }, { status: 400 });
   } catch (err) {
     return NextResponse.json(
