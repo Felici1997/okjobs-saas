@@ -4,7 +4,8 @@ import { createClient } from '@/lib/supabase/client';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { IconLoader2, IconLogout, IconLayoutDashboard, IconBuildingStore, IconAffiliate, IconFileInvoice, IconMenu2, IconChevronRight } from '@tabler/icons-react';
+import { IconLogout, IconLayoutDashboard, IconBuildingStore, IconAffiliate, IconFileInvoice, IconMenu2, IconChevronRight } from '@tabler/icons-react';
+import Spinner from '@/app/components/Spinner';
 
 const adminNavItems = [
   { href: '/admin/dashboard', label: 'Tableau de bord', icon: IconLayoutDashboard },
@@ -42,7 +43,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: '#0F172A' }}>
-        <IconLoader2 className="animate-spin" style={{ width: '32px', height: '32px', color: '#fff' }} />
+        <Spinner size="lg" color="#fff" />
       </div>
     );
   }

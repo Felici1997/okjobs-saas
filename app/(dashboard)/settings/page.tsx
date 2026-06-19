@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { createClient } from '@/lib/supabase/client';
+import LoadingButton from '@/app/components/LoadingButton';
 import { IconKey, IconCopy, IconCheck, IconTrash, IconPlus } from '@tabler/icons-react';
 
 export default function SettingsPage() {
@@ -10,6 +11,7 @@ export default function SettingsPage() {
   const supabase = createClient();
   const [apiKeys, setApiKeys] = useState<{ id: string; name: string; key_prefix: string; created_at: string; revoked: boolean; last_used_at: string | null }[]>([]);
   const [newKeyName, setNewKeyName] = useState('');
+  const [creating, setCreating] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   const loadKeys = () => {
@@ -29,6 +31,7 @@ export default function SettingsPage() {
 
   const createKey = async () => {
     if (!newKeyName.trim()) return;
+    setCreating(true);
 
     const rawKey = `okj_${crypto.randomUUID().replace(/-/g, '')}`;
     const prefix = rawKey.substring(0, 12) + '...';
@@ -44,6 +47,8 @@ export default function SettingsPage() {
       key_prefix: prefix,
       name: newKeyName.trim(),
     });
+
+    setCreating(false);
 
     if (!error) {
       setCopiedKey(rawKey);
@@ -73,11 +78,10 @@ export default function SettingsPage() {
           <input type="text" placeholder="Nom de la clé (ex: Mon app RH)" value={newKeyName}
             onChange={(e) => setNewKeyName(e.target.value)}
             style={{ flex: 1, padding: '8px 12px', fontSize: '14px', border: '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827' }} />
-          <button onClick={createKey} disabled={!newKeyName.trim()}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: 'pointer' }}>
-            <IconPlus style={{ width: '15px', height: '15px' }} />
+          <LoadingButton onClick={createKey} disabled={!newKeyName.trim()} loading={creating} icon={<IconPlus style={{ width: '15px', height: '15px' }} />}
+            style={{ fontSize: '13px', padding: '8px 16px' }}>
             Créer
-          </button>
+          </LoadingButton>
         </div>
 
         {copiedKey && (

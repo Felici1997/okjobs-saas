@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { IconLayoutDashboard, IconFileDescription, IconMessage2, IconHistory, IconKey, IconLogout, IconMenu2, IconChevronRight } from '@tabler/icons-react';
+import Spinner from '@/app/components/Spinner';
 
 const navItems = [
   { href: '/dashboard', label: 'Tableau de bord', icon: IconLayoutDashboard },
@@ -29,7 +30,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: '#F9FAFB' }}>
-        <div style={{ width: '32px', height: '32px', borderRadius: '50%', border: '3px solid #E5E7EB', borderTopColor: '#534AB7', animation: 'spin 0.6s linear infinite' }} />
+        <Spinner size="lg" color="#534AB7" />
       </div>
     );
   }

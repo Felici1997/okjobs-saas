@@ -5,6 +5,7 @@ import { useAuth } from '@/lib/contexts/auth-context';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter, useParams } from 'next/navigation';
 import Timer from '@/app/components/Timer';
+import LoadingButton from '@/app/components/LoadingButton';
 import { IconSend, IconLoader2, IconSquare, IconMessage2, IconUser, IconAlertCircle } from '@tabler/icons-react';
 
 type ChatMessage = {
@@ -30,6 +31,7 @@ export default function InterviewChatPage() {
 
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [ending, setEnding] = useState(false);
   const [session, setSession] = useState<{
     job_title: string;
     interview_type: string;
@@ -121,13 +123,13 @@ export default function InterviewChatPage() {
   };
 
   const handleEnd = async () => {
-    setSending(true);
+    setEnding(true);
     try {
       await fetch(`/api/internal/interview/${id}/end`, { method: 'POST' });
       router.push(`/interview/${id}/feedback`);
     } catch {
       setError("Erreur lors de la fin de l'entretien");
-      setSending(false);
+      setEnding(false);
     }
   };
 
@@ -183,11 +185,11 @@ export default function InterviewChatPage() {
         </div>
         <div className="flex items-center justify-between sm:justify-end" style={{ gap: '10px' }}>
           <Timer minutes={session.timer_minutes} onExpired={handleTimerExpired} />
-          <button onClick={handleEnd} disabled={sending}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 500, padding: '6px 12px', borderRadius: '6px', border: '0.5px solid #FCA5A5', background: '#FCEBEB', color: '#791F1F', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+          <LoadingButton onClick={handleEnd} loading={ending} variant="danger"
+            style={{ fontSize: '12px', padding: '6px 12px', borderRadius: '6px', whiteSpace: 'nowrap' }}>
             <IconSquare style={{ width: '12px', height: '12px' }} />
             Terminer
-          </button>
+          </LoadingButton>
         </div>
       </div>
 
@@ -255,11 +257,10 @@ export default function InterviewChatPage() {
           <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Votre réponse..."
             disabled={sending} autoFocus
             style={{ flex: 1, padding: '10px 12px', fontSize: '14px', border: '0.5px solid #D1D5DB', borderRadius: '8px', background: '#fff', color: '#111827' }} />
-          <button type="submit" disabled={!input.trim() || sending}
-            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '10px 16px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: 'pointer' }}>
-            {sending ? <IconLoader2 className="w-4 animate-spin" /> : <IconSend style={{ width: '16px', height: '16px' }} />}
+          <LoadingButton type="submit" disabled={!input.trim()} loading={sending} icon={<IconSend style={{ width: '16px', height: '16px' }} />}
+            style={{ fontSize: '13px', padding: '10px 16px', borderRadius: '8px' }}>
             <span className="hidden sm:inline">Envoyer</span>
-          </button>
+          </LoadingButton>
         </form>
       )}
     </div>

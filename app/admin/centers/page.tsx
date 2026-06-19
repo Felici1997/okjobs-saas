@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { apiAdmin } from '@/lib/admin-api';
-import { IconPlus, IconLoader2, IconEdit, IconCheck, IconX } from '@tabler/icons-react';
+import { IconPlus, IconEdit, IconCheck, IconX } from '@tabler/icons-react';
 
 type Center = {
   id: string;
@@ -60,8 +60,16 @@ export default function AdminCentersPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <IconLoader2 className="animate-spin" style={{ width: '32px', height: '32px', color: '#64748B' }} />
+      <div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+          <div className="skeleton-pulse-dark" style={{ width: '200px', height: '24px' }} />
+          <div className="skeleton-pulse-dark" style={{ width: '140px', height: '36px', borderRadius: '8px' }} />
+        </div>
+        <div style={{ background: '#1E293B', borderRadius: '12px', border: '0.5px solid #334155', padding: '1.25rem' }}>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="skeleton-pulse-dark" style={{ width: '100%', height: '40px', marginBottom: '8px' }} />
+          ))}
+        </div>
       </div>
     );
   }

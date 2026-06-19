@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { apiAdmin } from '@/lib/admin-api';
-import { IconLoader2, IconDownload, IconFileInvoice } from '@tabler/icons-react';
+import { IconDownload, IconFileInvoice } from '@tabler/icons-react';
+import Spinner from '@/app/components/Spinner';
 
 type Invoice = {
   id: string;
@@ -26,6 +27,7 @@ const statusStyles: Record<string, { label: string; color: string; bg: string }>
 export default function AdminInvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
+  const [paying, setPaying] = useState<string | null>(null);
 
   useEffect(() => {
     apiAdmin({
@@ -39,18 +41,26 @@ export default function AdminInvoicesPage() {
   }, []);
 
   const handleMarkPaid = async (id: string) => {
+    setPaying(id);
     await apiAdmin({ table: 'invoices', method: 'update', set: { status: 'paid', paid_at: new Date().toISOString() }, whereCol: 'id', whereVal: id });
     setInvoices((prev) =>
       prev.map((inv) =>
         inv.id === id ? { ...inv, status: 'paid', paid_at: new Date().toISOString() } : inv
       )
     );
+    setPaying(null);
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <IconLoader2 className="animate-spin" style={{ width: '32px', height: '32px', color: '#64748B' }} />
+      <div>
+        <h1 style={{ fontSize: '20px', fontWeight: 600, color: '#F8FAFC', margin: '0 0 24px' }}>Factures</h1>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '24px' }}>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="skeleton-pulse-dark" style={{ height: '96px', borderRadius: '12px' }} />
+          ))}
+        </div>
+        <div className="skeleton-pulse-dark" style={{ width: '100%', height: '320px', borderRadius: '12px' }} />
       </div>
     );
   }
@@ -115,9 +125,10 @@ export default function AdminInvoicesPage() {
                       </td>
                       <td style={{ textAlign: 'right', padding: '12px 16px' }}>
                         {inv.status === 'pending' && (
-                          <button onClick={() => handleMarkPaid(inv.id)}
-                            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 500, padding: '4px 10px', borderRadius: '6px', border: 'none', background: '#10B981', color: '#fff', cursor: 'pointer' }}>
-                            <IconDownload style={{ width: '12px', height: '12px' }} />
+                          <button onClick={() => { setPaying(inv.id); handleMarkPaid(inv.id); }}
+                            disabled={paying === inv.id}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 500, padding: '4px 10px', borderRadius: '6px', border: 'none', background: '#10B981', color: '#fff', cursor: paying === inv.id ? 'not-allowed' : 'pointer', opacity: paying === inv.id ? 0.6 : 1 }}>
+                            {paying === inv.id ? <Spinner size="sm" color="#fff" /> : <IconDownload style={{ width: '12px', height: '12px' }} />}
                             Marquer payée
                           </button>
                         )}

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { apiAdmin } from '@/lib/admin-api';
-import { IconLoader2, IconSearch, IconAlertTriangle } from '@tabler/icons-react';
+import { IconSearch, IconAlertTriangle } from '@tabler/icons-react';
+import Spinner from '@/app/components/Spinner';
 
 type AffiliateRow = {
   id: string;
@@ -29,6 +30,7 @@ export default function AdminAffiliatePage() {
   const [codes, setCodes] = useState<AffiliateRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [resolving, setResolving] = useState<string | null>(null);
 
   const load = () => {
     setLoading(true);
@@ -45,7 +47,9 @@ export default function AdminAffiliatePage() {
   useEffect(() => { load(); }, []);
 
   const handleResolveDispute = async (codeId: string) => {
+    setResolving(codeId);
     await apiAdmin({ table: 'affiliate_codes', method: 'update', set: { status: 'confirmed' }, whereCol: 'id', whereVal: codeId });
+    setResolving(null);
     load();
   };
 
@@ -65,8 +69,15 @@ export default function AdminAffiliatePage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <IconLoader2 className="animate-spin" style={{ width: '32px', height: '32px', color: '#64748B' }} />
+      <div>
+        <h1 style={{ fontSize: '20px', fontWeight: 600, color: '#F8FAFC', margin: '0 0 24px' }}>Affiliation</h1>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '24px' }}>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="skeleton-pulse-dark" style={{ height: '96px', borderRadius: '12px' }} />
+          ))}
+        </div>
+        <div className="skeleton-pulse-dark" style={{ width: '100%', height: '40px', borderRadius: '8px', marginBottom: '16px' }} />
+        <div className="skeleton-pulse-dark" style={{ width: '100%', height: '320px', borderRadius: '12px' }} />
       </div>
     );
   }
@@ -106,8 +117,10 @@ export default function AdminAffiliatePage() {
                 <p style={{ fontSize: '13px', fontWeight: 500, color: '#F8FAFC', margin: 0 }}>Code {d.code}</p>
                 <p style={{ fontSize: '12px', color: '#94A3B8', margin: '2px 0 0' }}>{d.user_confirmation === 'yes' ? 'Utilisateur confirme' : d.user_confirmation === 'no' ? 'Utilisateur refuse' : 'En attente confirmation'}</p>
               </div>
-              <button onClick={() => handleResolveDispute(d.id)}
-                style={{ fontSize: '12px', fontWeight: 500, padding: '5px 12px', borderRadius: '6px', border: 'none', background: '#10B981', color: '#fff', cursor: 'pointer' }}>
+              <button onClick={() => { setResolving(d.id); handleResolveDispute(d.id); }}
+                disabled={resolving === d.id}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 500, padding: '5px 12px', borderRadius: '6px', border: 'none', background: '#10B981', color: '#fff', cursor: resolving === d.id ? 'not-allowed' : 'pointer', opacity: resolving === d.id ? 0.6 : 1 }}>
+                {resolving === d.id ? <Spinner size="sm" color="#fff" /> : null}
                 Résoudre
               </button>
             </div>

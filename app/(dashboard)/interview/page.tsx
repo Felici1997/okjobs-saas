@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { interviewConfigSchema } from '@/lib/validations/interview';
 import { IconLock, IconCrownFilled, IconAlertCircle } from '@tabler/icons-react';
+import Spinner from '@/app/components/Spinner';
 import type { InterviewType, Difficulty } from '@/types';
 
 const interviewTypes: { value: InterviewType; label: string; desc: string }[] = [
@@ -32,6 +33,8 @@ export default function InterviewPage() {
   const supabase = createClient();
   const [cvs, setCvs] = useState<{ id: string; title: string }[]>([]);
   const [error, setError] = useState('');
+
+  const [starting, setStarting] = useState(false);
 
   const [config, setConfig] = useState({
     cvId: '',
@@ -62,6 +65,7 @@ const clearFieldError = (field: string) => setFieldErrors((prev) => { const next
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setStarting(true);
     setError('');
     setFieldErrors({});
 
@@ -111,6 +115,7 @@ const clearFieldError = (field: string) => setFieldErrors((prev) => { const next
       .single();
 
     if (insertError || !data) {
+      setStarting(false);
       setError("Erreur lors de la création de l'entretien");
       return;
     }
@@ -259,7 +264,8 @@ const clearFieldError = (field: string) => setFieldErrors((prev) => { const next
             </div>
           )}
 
-          <button type="submit" style={{ width: '100%', padding: '10px 16px', fontSize: '14px', fontWeight: 500, borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: 'pointer' }}>
+          <button type="submit" disabled={starting} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', padding: '10px 16px', fontSize: '14px', fontWeight: 500, borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: starting ? 'not-allowed' : 'pointer', opacity: starting ? 0.6 : 1 }}>
+            {starting ? <Spinner size="sm" color="#fff" /> : null}
             Commencer l&apos;entretien
           </button>
         </div>

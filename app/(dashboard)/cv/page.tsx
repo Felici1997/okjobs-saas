@@ -5,11 +5,13 @@ import { useAuth } from '@/lib/contexts/auth-context';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import { IconPlus, IconFileDescription, IconExternalLink, IconUpload, IconTrash } from '@tabler/icons-react';
+import Spinner from '@/app/components/Spinner';
 
 export default function CVPage() {
   const { user } = useAuth();
   const supabase = createClient();
   const [cvs, setCvs] = useState<{ id: string; title: string; is_active: boolean; updated_at: string }[]>([]);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   const loadCvs = () => {
     if (!user) return;
@@ -88,15 +90,18 @@ export default function CVPage() {
                 </Link>
                 <button
                   onClick={async () => {
+                    setDeleting(cv.id);
                     await supabase.from('cv_documents').delete().eq('id', cv.id);
                     loadCvs();
+                    setDeleting(null);
                   }}
+                  disabled={deleting === cv.id}
                   aria-label="Supprimer ce CV"
-                  style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '8px', border: '0.5px solid #E5E7EB', background: 'transparent', color: '#A32D2D', cursor: 'pointer' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = '#FCEBEB'; }}
+                  style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '8px', border: '0.5px solid #E5E7EB', background: 'transparent', color: '#A32D2D', cursor: deleting === cv.id ? 'not-allowed' : 'pointer', opacity: deleting === cv.id ? 0.6 : 1 }}
+                  onMouseEnter={(e) => { if (deleting !== cv.id) e.currentTarget.style.background = '#FCEBEB'; }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
                 >
-                  <IconTrash style={{ width: '16px', height: '16px' }} />
+                  {deleting === cv.id ? <Spinner size="sm" color="#A32D2D" /> : <IconTrash style={{ width: '16px', height: '16px' }} />}
                 </button>
               </div>
             </div>

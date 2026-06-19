@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { createClient } from '@/lib/supabase/client';
-import { IconUpload, IconFileDescription, IconLoader2, IconArrowLeft, IconCrownFilled } from '@tabler/icons-react';
+import LoadingButton from '@/app/components/LoadingButton';
+import { IconUpload, IconFileDescription, IconArrowLeft, IconCrownFilled } from '@tabler/icons-react';
 import Link from 'next/link';
 import * as pdfjs from 'pdfjs-dist';
 
@@ -149,23 +150,10 @@ export default function ImportCVPage() {
           </div>
 
           {file && (
-            <button
-              onClick={handleExtract}
-              disabled={extracting}
-              className="btn btn-primary w-full mt-4"
-            >
-              {extracting ? (
-                <>
-                  <IconLoader2 className="w-4 animate-spin" />
-                  Extraction en cours...
-                </>
-              ) : (
-                <>
-                  <IconUpload className="w-4" />
-                  Extraire et créer le CV
-                </>
-              )}
-            </button>
+            <LoadingButton onClick={handleExtract} loading={extracting} icon={<IconUpload className="w-4" />}
+              fullWidth style={{ marginTop: '16px' }}>
+              Extraire et créer le CV
+            </LoadingButton>
           )}
 
           {error && <div className="alert alert-error text-sm mt-4">{error}</div>}

@@ -10,6 +10,7 @@ import EducationForm from '@/app/components/EducationForm';
 import SkillForm from '@/app/components/SkillForm';
 import LanguageForm from '@/app/components/LanguageForm';
 import HobbyForm from '@/app/components/HobbyForm';
+import LoadingButton from '@/app/components/LoadingButton';
 import { IconCheck, IconRefresh, IconLoader2 } from '@tabler/icons-react';
 import type {
   PersonalDetails,
@@ -144,11 +145,10 @@ export default function CVEditForm({ cvId }: Props) {
             Renseignez vos informations pour personnaliser vos entretiens
           </p>
         </div>
-        <button onClick={handleSave} disabled={saving}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: 'pointer' }}>
-          {saving ? <IconLoader2 className="w-4 animate-spin" /> : <IconCheck style={{ width: '15px', height: '15px' }} />}
+        <LoadingButton onClick={handleSave} loading={saving} icon={<IconCheck style={{ width: '15px', height: '15px' }} />}
+          style={{ fontSize: '13px', padding: '8px 16px' }}>
           Enregistrer
-        </button>
+        </LoadingButton>
       </div>
 
       <div>
@@ -226,11 +226,10 @@ export default function CVEditForm({ cvId }: Props) {
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', paddingBottom: '2rem' }}>
-        <button onClick={handleSave} disabled={saving}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '14px', fontWeight: 500, padding: '10px 20px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: 'pointer' }}>
-          {saving ? <IconLoader2 className="w-4 animate-spin" /> : <IconCheck style={{ width: '15px', height: '15px' }} />}
+        <LoadingButton onClick={handleSave} loading={saving} icon={<IconCheck style={{ width: '15px', height: '15px' }} />}
+          style={{ fontSize: '14px', padding: '10px 20px' }}>
           {cvId ? 'Mettre à jour' : 'Créer mon CV'}
-        </button>
+        </LoadingButton>
       </div>
     </div>
   );

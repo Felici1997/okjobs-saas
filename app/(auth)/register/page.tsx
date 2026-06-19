@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { signUpSchema } from '@/lib/validations/auth';
 import { IconEye, IconEyeOff, IconUserPlus } from '@tabler/icons-react';
+import Spinner from '@/app/components/Spinner';
 
 export default function RegisterPage() {
   const { signUp } = useAuth();
@@ -84,13 +85,9 @@ export default function RegisterPage() {
           {success && <div style={{ background: '#E1F5EE', color: '#085041', fontSize: '13px', padding: '8px 12px', borderRadius: '8px', border: '0.5px solid #A7D4C5' }}>{success}</div>}
 
           <button type="submit" disabled={loading}
-            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', padding: '10px 16px', fontSize: '14px', fontWeight: 500, borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1 }}>
-            {loading ? (
-              <span style={{ width: '16px', height: '16px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', animation: 'spin 0.6s linear infinite', display: 'inline-block' }} />
-            ) : (
-              <IconUserPlus style={{ width: '16px', height: '16px' }} />
-            )}
-            Créer mon compte
+            style={{ width: '100%', padding: '10px', fontSize: '14px', fontWeight: 500, borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            {loading ? <Spinner size="sm" color="#fff" /> : null}
+            {loading ? 'Inscription...' : 'Créer mon compte'}
           </button>
         </form>
 

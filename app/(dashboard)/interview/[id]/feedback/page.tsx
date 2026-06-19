@@ -7,7 +7,6 @@ import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import TrainingRecommendationCard from '@/app/components/TrainingRecommendationCard';
 import {
-  IconLoader2,
   IconArrowLeft,
   IconTrophyFilled,
   IconFocus2,
@@ -22,6 +21,7 @@ import {
   IconMessage2,
   IconLock,
 } from '@tabler/icons-react';
+import Spinner from '@/app/components/Spinner';
 
 type Feedback = {
   id: string;
@@ -79,7 +79,7 @@ export default function FeedbackPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <IconLoader2 className="w-8 h-8 animate-spin" style={{ color: '#534AB7' }} />
+        <Spinner size="lg" color="#534AB7" />
       </div>
     );
   }

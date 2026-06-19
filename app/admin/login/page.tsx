@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { signInSchema } from '@/lib/validations/auth';
 import { IconEye, IconEyeOff, IconShieldLock } from '@tabler/icons-react';
+import Spinner from '@/app/components/Spinner';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -88,7 +89,8 @@ export default function AdminLoginPage() {
           </div>
 
           <button type="submit" disabled={loading}
-            style={{ width: '100%', padding: '10px', fontSize: '14px', fontWeight: 500, borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1 }}>
+            style={{ width: '100%', padding: '10px', fontSize: '14px', fontWeight: 500, borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            {loading ? <Spinner size="sm" color="#fff" /> : null}
             {loading ? 'Connexion...' : 'Se connecter'}
           </button>
         </form>

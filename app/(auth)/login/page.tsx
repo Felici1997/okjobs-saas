@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { signInSchema } from '@/lib/validations/auth';
 import { IconEye, IconEyeOff, IconLogin } from '@tabler/icons-react';
+import Spinner from '@/app/components/Spinner';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -74,13 +75,9 @@ export default function LoginPage() {
           {error && <div style={{ background: '#FCEBEB', color: '#791F1F', fontSize: '13px', padding: '8px 12px', borderRadius: '8px', border: '0.5px solid #FCA5A5' }}>{error}</div>}
 
           <button type="submit" disabled={loading}
-            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', padding: '10px 16px', fontSize: '14px', fontWeight: 500, borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1 }}>
-            {loading ? (
-              <span style={{ width: '16px', height: '16px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', animation: 'spin 0.6s linear infinite', display: 'inline-block' }} />
-            ) : (
-              <IconLogin style={{ width: '16px', height: '16px' }} />
-            )}
-            Se connecter
+            style={{ width: '100%', padding: '10px', fontSize: '14px', fontWeight: 500, borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            {loading ? <Spinner size="sm" color="#fff" /> : null}
+            {loading ? 'Connexion...' : 'Se connecter'}
           </button>
         </form>
 

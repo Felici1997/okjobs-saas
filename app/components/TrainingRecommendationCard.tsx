@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { IconBuildingStore, IconCoin, IconClock, IconArrowRight, IconCheck, IconLoader2 } from '@tabler/icons-react';
+import { IconBuildingStore, IconCoin, IconClock, IconArrowRight, IconCheck } from '@tabler/icons-react';
+import LoadingButton from '@/app/components/LoadingButton';
 
 type Program = {
   id: string;
@@ -124,18 +125,15 @@ export default function TrainingRecommendationCard({ sessionId, jobTitle, sector
                   Code envoyé
                 </span>
               ) : (
-                <button
+                <LoadingButton
                   onClick={() => handleInterest(p.id, p.center_id)}
-                  disabled={generating === p.id}
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: 500, padding: '5px 10px', borderRadius: '6px', border: 'none', background: '#534AB7', color: '#fff', cursor: generating === p.id ? 'not-allowed' : 'pointer', whiteSpace: 'nowrap', opacity: generating === p.id ? 0.6 : 1 }}
+                  loading={generating === p.id}
+                  variant="primary"
+                  icon={<IconArrowRight style={{ width: '12px', height: '12px' }} />}
+                  style={{ fontSize: '11px', padding: '5px 10px' }}
                 >
-                  {generating === p.id ? (
-                    <IconLoader2 className="animate-spin" style={{ width: '12px', height: '12px' }} />
-                  ) : (
-                    <IconArrowRight style={{ width: '12px', height: '12px' }} />
-                  )}
                   Je suis intéressé(e)
-                </button>
+                </LoadingButton>
               )}
             </div>
           ))}

@@ -5,6 +5,7 @@ import { useAuth } from '@/lib/contexts/auth-context';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import ScoreChart from '@/app/components/ScoreChart';
+import Spinner from '@/app/components/Spinner';
 import {
   IconFileDescription,
   IconMessageFilled,
@@ -179,7 +180,7 @@ export default function DashboardPage() {
             <span style={{ fontSize: '13px', color: '#6B7280' }}>Total entretiens</span>
           </div>
           <div style={{ fontSize: '26px', fontWeight: 500, color: '#111827' }}>
-            {loading ? <span className="loading loading-dots loading-sm" /> : stats.interviewCount}
+            {loading ? <Spinner size="sm" /> : stats.interviewCount}
           </div>
           <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '4px' }}>
             {stats.completedThisMonth} terminé{stats.completedThisMonth !== 1 ? 's' : ''} ce mois-ci
@@ -194,7 +195,7 @@ export default function DashboardPage() {
             <span style={{ fontSize: '13px', color: '#6B7280' }}>Score moyen</span>
           </div>
           <div style={{ fontSize: '26px', fontWeight: 500, color: avgColor.text }}>
-            {loading ? <span className="loading loading-dots loading-sm" /> : (stats.averageScore !== null ? `${stats.averageScore}%` : '—')}
+            {loading ? <Spinner size="sm" color="#6B7280" /> : (stats.averageScore !== null ? `${stats.averageScore}%` : '—')}
           </div>
           <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '4px' }}>
             sur {stats.totalScored} entretien{stats.totalScored !== 1 ? 's' : ''} notés
@@ -209,7 +210,7 @@ export default function DashboardPage() {
             <span style={{ fontSize: '13px', color: '#6B7280' }}>Type le plus pratiqué</span>
           </div>
           <div style={{ fontSize: '20px', fontWeight: 500, color: '#111827' }}>
-            {loading ? <span className="loading loading-dots loading-sm" /> : (stats.mostPracticedType || '—')}
+            {loading ? <Spinner size="sm" color="#6B7280" /> : (stats.mostPracticedType || '—')}
           </div>
           <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '4px' }}>
             {stats.mostPracticedTypeCount > 0 ? `${stats.mostPracticedTypeCount} sur ${stats.interviewCount} entretien${stats.interviewCount !== 1 ? 's' : ''}` : ''}

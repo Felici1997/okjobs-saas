@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { apiAdmin } from '@/lib/admin-api';
-import { IconUsers, IconBuildingStore, IconAffiliate, IconCoin, IconArrowUp, IconLoader2 } from '@tabler/icons-react';
+import { IconUsers, IconBuildingStore, IconAffiliate, IconCoin, IconArrowUp } from '@tabler/icons-react';
 
 type Stats = {
   totalUsers: number;
@@ -44,8 +44,13 @@ export default function AdminDashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <IconLoader2 className="animate-spin" style={{ width: '32px', height: '32px', color: '#64748B' }} />
+      <div>
+        <h1 style={{ fontSize: '20px', fontWeight: 600, color: '#F8FAFC', margin: '0 0 24px' }}>Tableau de bord</h1>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="skeleton-pulse-dark" style={{ height: '128px', borderRadius: '12px' }} />
+          ))}
+        </div>
       </div>
     );
   }
