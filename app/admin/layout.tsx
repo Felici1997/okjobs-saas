@@ -1,11 +1,10 @@
 'use client';
 
 import { createClient } from '@/lib/supabase/client';
-import { createAdminClient } from '@/lib/supabase/admin';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { IconLoader2, IconLogout, IconLayoutDashboard, IconBuildingStore, IconAffiliate, IconFileInvoice, IconUsers, IconMenu2, IconChevronRight } from '@tabler/icons-react';
+import { IconLoader2, IconLogout, IconLayoutDashboard, IconBuildingStore, IconAffiliate, IconFileInvoice, IconMenu2, IconChevronRight } from '@tabler/icons-react';
 
 const adminNavItems = [
   { href: '/admin/dashboard', label: 'Tableau de bord', icon: IconLayoutDashboard },
@@ -17,37 +16,28 @@ const adminNavItems = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const supabase = createClient();
+  const pathname = usePathname();
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [adminEmail, setAdminEmail] = useState<string | null>(null);
-  const [pathname, setPathname] = useState('');
 
   useEffect(() => {
-    setPathname(window.location.pathname);
-  }, []);
-
-  useEffect(() => {
-    supabase.auth.getUser().then(async ({ data: { user } }) => {
-      if (!user) {
+    fetch('/api/admin/check')
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.isAdmin) {
+          router.push(data.email ? '/dashboard' : '/login');
+          return;
+        }
+        setAdminEmail(data.email);
+        setIsAdmin(true);
+        setLoading(false);
+      })
+      .catch(() => {
         router.push('/login');
-        return;
-      }
-      const admin = createAdminClient();
-      const { data: profile } = await admin
-        .from('profiles')
-        .select('is_admin, email')
-        .eq('id', user.id)
-        .single();
-      if (!profile?.is_admin) {
-        router.push('/dashboard');
-        return;
-      }
-      setAdminEmail(profile.email || null);
-      setIsAdmin(true);
-      setLoading(false);
-    });
-  }, [supabase, router]);
+      });
+  }, [router]);
 
   if (loading) {
     return (

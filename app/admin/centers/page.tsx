@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { createAdminClient } from '@/lib/supabase/admin';
+import { apiAdmin } from '@/lib/admin-api';
 import { IconPlus, IconLoader2, IconEdit, IconCheck, IconX } from '@tabler/icons-react';
 
 type Center = {
@@ -18,7 +18,6 @@ type Center = {
 const emptyForm = { name: '', address: '', phone: '', email: '', commission_pct: 10 };
 
 export default function AdminCentersPage() {
-  const admin = createAdminClient();
   const [centers, setCenters] = useState<Center[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -28,10 +27,8 @@ export default function AdminCentersPage() {
 
   const load = () => {
     setLoading(true);
-    admin.from('training_centers').select('*').order('created_at', { ascending: false }).then(({ data }) => {
-      if (data) setCenters(data);
-      setLoading(false);
-    });
+    apiAdmin({ table: 'training_centers', select: '*', orders: [{ column: 'created_at', ascending: false }] })
+      .then(({ data }) => { if (data) setCenters(data); setLoading(false); });
   };
 
   useEffect(() => { load(); }, []);
@@ -39,9 +36,9 @@ export default function AdminCentersPage() {
   const handleSave = async () => {
     setSaving(true);
     if (editingId) {
-      await admin.from('training_centers').update(form).eq('id', editingId);
+      await apiAdmin({ table: 'training_centers', method: 'update', set: form, whereCol: 'id', whereVal: editingId });
     } else {
-      await admin.from('training_centers').insert(form);
+      await apiAdmin({ table: 'training_centers', method: 'insert', data: form });
     }
     setSaving(false);
     setShowForm(false);
@@ -57,7 +54,7 @@ export default function AdminCentersPage() {
   };
 
   const toggleActive = async (id: string, current: boolean) => {
-    await admin.from('training_centers').update({ is_active: !current }).eq('id', id);
+    await apiAdmin({ table: 'training_centers', method: 'update', set: { is_active: !current }, whereCol: 'id', whereVal: id });
     load();
   };
 

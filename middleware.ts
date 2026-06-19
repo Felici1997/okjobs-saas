@@ -18,6 +18,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Admin endpoints : auth côté route
+  if (pathname.startsWith('/admin/login') || pathname.startsWith('/api/admin')) {
+    return NextResponse.next();
+  }
+
   // Affiliate endpoints : auth côté route (key ou session)
   if (pathname.startsWith('/api/affiliate') || pathname.startsWith('/api/whatsapp')) {
     return NextResponse.next();

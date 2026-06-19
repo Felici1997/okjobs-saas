@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { createAdminClient } from '@/lib/supabase/admin';
+import { apiAdmin } from '@/lib/admin-api';
 import { IconUsers, IconBuildingStore, IconAffiliate, IconCoin, IconArrowUp, IconLoader2 } from '@tabler/icons-react';
 
 type Stats = {
@@ -18,14 +18,16 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const admin = createAdminClient();
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
     Promise.all([
-      admin.from('profiles').select('*', { count: 'exact', head: true }),
-      admin.from('training_centers').select('*', { count: 'exact', head: true }),
-      admin.from('affiliate_codes').select('*', { count: 'exact', head: true }),
-      admin.from('affiliate_codes').select('commission_amount').eq('status', 'converted'),
-      admin.from('affiliate_codes').select('id', { count: 'exact', head: true }).eq('status', 'converted').gte('updated_at', new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()),
-      admin.from('profiles').select('id', { count: 'exact', head: true }).gte('created_at', new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()),
+      apiAdmin({ table: 'profiles', select: 'id' }),
+      apiAdmin({ table: 'training_centers', select: 'id' }),
+      apiAdmin({ table: 'affiliate_codes', select: 'id' }),
+      apiAdmin({ table: 'affiliate_codes', select: 'commission_amount', filters: { status: 'converted' } }),
+      apiAdmin({ table: 'affiliate_codes', select: 'id', filters: { status: 'converted', 'gte:converted_at': startOfMonth } }),
+      apiAdmin({ table: 'profiles', select: 'id', filters: { 'gte:created_at': startOfMonth } }),
     ]).then(([users, centers, codes, commissions, conversions, newUsers]) => {
       const totalCommission = (commissions.data || []).reduce((sum: number, c: { commission_amount: number }) => sum + (c.commission_amount || 0), 0);
       setStats({
@@ -37,7 +39,7 @@ export default function AdminDashboardPage() {
         newUsersMonth: newUsers.count || 0,
       });
       setLoading(false);
-    });
+    }).catch(() => setLoading(false));
   }, []);
 
   if (loading) {

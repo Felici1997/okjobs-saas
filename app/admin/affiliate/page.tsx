@@ -1,15 +1,19 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { createAdminClient } from '@/lib/supabase/admin';
-import { getAllAffiliateCodes, getDisputedCodes, type AffiliateCodeWithDetails } from '@/lib/affiliate';
+import { apiAdmin } from '@/lib/admin-api';
 import { IconLoader2, IconSearch, IconAlertTriangle } from '@tabler/icons-react';
 
-type DisputeRow = {
+type AffiliateRow = {
   id: string;
-  reason: string;
+  code: string;
   status: string;
-  affiliate_codes: AffiliateCodeWithDetails;
+  created_at: string;
+  commission_amount: number | null;
+  user_confirmation: string | null;
+  training_programs: { title: string; price: number; category: string };
+  training_centers: { name: string; commission_pct: number };
+  profiles: { full_name: string; email: string };
 };
 
 const statusLabels: Record<string, { label: string; color: string; bg: string }> = {
@@ -22,31 +26,18 @@ const statusLabels: Record<string, { label: string; color: string; bg: string }>
 };
 
 export default function AdminAffiliatePage() {
-  const admin = createAdminClient();
-  const [codes, setCodes] = useState<AffiliateCodeWithDetails[]>([]);
-  const [disputes, setDisputes] = useState<(AffiliateCodeWithDetails & { dispute_id?: string; dispute_reason?: string })[]>([]);
-  const [monthlyCommissions, setMonthlyCommissions] = useState(0);
+  const [codes, setCodes] = useState<AffiliateRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
   const load = () => {
     setLoading(true);
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-    Promise.all([
-      getAllAffiliateCodes(),
-      getDisputedCodes(),
-      admin
-        .from('affiliate_codes')
-        .select('commission_amount')
-        .in('status', ['converted'])
-        .gte('converted_at', startOfMonth),
-    ]).then(([allCodes, disputedCodes, monthlyResult]) => {
-      setCodes(allCodes);
-      setDisputes(disputedCodes as unknown as (AffiliateCodeWithDetails & { dispute_id?: string; dispute_reason?: string })[]);
-      setMonthlyCommissions(
-        (monthlyResult.data || []).reduce((sum: number, c: { commission_amount: number }) => sum + (c.commission_amount || 0), 0)
-      );
+    apiAdmin({
+      table: 'affiliate_codes',
+      select: '*, training_programs!inner(title, price, category), training_centers!inner(name, commission_pct), profiles!inner(full_name, email)',
+      orders: [{ column: 'created_at', ascending: false }],
+    }).then(({ data }) => {
+      if (data) setCodes(data as AffiliateRow[]);
       setLoading(false);
     });
   };
@@ -54,7 +45,7 @@ export default function AdminAffiliatePage() {
   useEffect(() => { load(); }, []);
 
   const handleResolveDispute = async (codeId: string) => {
-    await admin.from('affiliate_codes').update({ status: 'confirmed' }).eq('id', codeId);
+    await apiAdmin({ table: 'affiliate_codes', method: 'update', set: { status: 'confirmed' }, whereCol: 'id', whereVal: codeId });
     load();
   };
 
@@ -64,6 +55,13 @@ export default function AdminAffiliatePage() {
       c.profiles?.email?.toLowerCase().includes(search.toLowerCase()) ||
       c.training_centers?.name?.toLowerCase().includes(search.toLowerCase())
   );
+
+  const disputes = codes.filter((c) => c.status === 'disputed');
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  const monthlyCommissions = codes
+    .filter((c) => c.status === 'converted' && c.created_at >= startOfMonth)
+    .reduce((sum, c) => sum + (c.commission_amount || 0), 0);
 
   if (loading) {
     return (
@@ -88,7 +86,7 @@ export default function AdminAffiliatePage() {
         </div>
         <div style={{ background: '#1E293B', borderRadius: '12px', border: '0.5px solid #334155', padding: '1rem' }}>
           <p style={{ fontSize: '11px', color: '#64748B', margin: '0 0 4px' }}>Contestations</p>
-          <p style={{ fontSize: '24px', fontWeight: 700, color: '#F87171', margin: 0 }}>{codes.filter((c) => c.status === 'disputed').length}</p>
+          <p style={{ fontSize: '24px', fontWeight: 700, color: '#F87171', margin: 0 }}>{disputes.length}</p>
         </div>
         <div style={{ background: '#1E293B', borderRadius: '12px', border: '0.5px solid #334155', padding: '1rem' }}>
           <p style={{ fontSize: '11px', color: '#64748B', margin: '0 0 4px' }}>Commissions du mois</p>

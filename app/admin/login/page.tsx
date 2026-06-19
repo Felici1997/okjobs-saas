@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/lib/contexts/auth-context';
-import { createAdminClient } from '@/lib/supabase/admin';
 import { signInSchema } from '@/lib/validations/auth';
 import { IconEye, IconEyeOff, IconShieldLock } from '@tabler/icons-react';
 
@@ -35,21 +34,9 @@ export default function AdminLoginPage() {
       return;
     }
 
-    const admin = createAdminClient();
-    const { data: { user } } = await admin.auth.getUser();
-    if (!user) {
-      setError('Utilisateur introuvable');
-      setLoading(false);
-      return;
-    }
-
-    const { data: profile } = await admin
-      .from('profiles')
-      .select('is_admin')
-      .eq('id', user.id)
-      .single();
-
-    if (!profile?.is_admin) {
+    const res = await fetch('/api/admin/check');
+    const data = await res.json();
+    if (!data.isAdmin) {
       setError('Accès non autorisé');
       setLoading(false);
       return;

@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { createAdminClient } from '@/lib/supabase/admin';
-import { IconLoader2, IconDownload, IconFileInvoice, IconCoin, IconBuildingStore, IconCalendar } from '@tabler/icons-react';
+import { apiAdmin } from '@/lib/admin-api';
+import { IconLoader2, IconDownload, IconFileInvoice } from '@tabler/icons-react';
 
 type Invoice = {
   id: string;
@@ -15,7 +15,6 @@ type Invoice = {
   paid_at: string | null;
   created_at: string;
   training_centers: { name: string };
-  invoice_items: { description: string; amount: number }[];
 };
 
 const statusStyles: Record<string, { label: string; color: string; bg: string }> = {
@@ -25,26 +24,22 @@ const statusStyles: Record<string, { label: string; color: string; bg: string }>
 };
 
 export default function AdminInvoicesPage() {
-  const admin = createAdminClient();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    admin
-      .from('invoices')
-      .select('*, training_centers!inner(name), invoice_items(*)')
-      .order('created_at', { ascending: false })
-      .then(({ data }) => {
-        if (data) setInvoices(data as unknown as Invoice[]);
-        setLoading(false);
-      });
+    apiAdmin({
+      table: 'invoices',
+      select: '*, training_centers!inner(name)',
+      orders: [{ column: 'created_at', ascending: false }],
+    }).then(({ data }) => {
+      if (data) setInvoices(data as unknown as Invoice[]);
+      setLoading(false);
+    });
   }, []);
 
   const handleMarkPaid = async (id: string) => {
-    await admin
-      .from('invoices')
-      .update({ status: 'paid', paid_at: new Date().toISOString() })
-      .eq('id', id);
+    await apiAdmin({ table: 'invoices', method: 'update', set: { status: 'paid', paid_at: new Date().toISOString() }, whereCol: 'id', whereVal: id });
     setInvoices((prev) =>
       prev.map((inv) =>
         inv.id === id ? { ...inv, status: 'paid', paid_at: new Date().toISOString() } : inv
