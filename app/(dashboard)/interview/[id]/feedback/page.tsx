@@ -281,7 +281,7 @@ export default function FeedbackPage() {
 
       {session.sector && session.job_title && (
         <TrainingRecommendationCard
-          sessionId={params.id}
+          sessionId={id}
           jobTitle={session.job_title}
           sector={session.sector}
         />
