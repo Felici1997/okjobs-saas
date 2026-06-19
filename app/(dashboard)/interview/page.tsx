@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation';
 import { interviewConfigSchema } from '@/lib/validations/interview';
 import { IconLock, IconCrownFilled, IconAlertCircle } from '@tabler/icons-react';
 import Spinner from '@/app/components/Spinner';
+import OnboardingModal from '@/app/components/OnboardingModal';
+import { useOnboarding } from '@/app/hooks/useOnboarding';
 import type { InterviewType, Difficulty } from '@/types';
 
 const interviewTypes: { value: InterviewType; label: string; desc: string }[] = [
@@ -27,10 +29,34 @@ function startOfMonth() {
   return new Date(d.getFullYear(), d.getMonth(), 1).toISOString();
 }
 
+const interviewSlides = [
+  {
+    title: 'Entretien simulé par IA',
+    description: 'Entraînez-vous avec des entretiens adaptés à votre CV, secteur et niveau d\'expérience.',
+    illustration: '/illustrations/onboarding/entretien/slide-1.svg',
+  },
+  {
+    title: 'Questions personnalisées',
+    description: 'L\'IA génère des questions techniques et comportementales en fonction de votre profil.',
+    illustration: '/illustrations/onboarding/entretien/slide-2.svg',
+  },
+  {
+    title: 'Feedback en temps réel',
+    description: 'Recevez des conseils sur vos réponses et des pistes d\'amélioration immédiates.',
+    illustration: '/illustrations/onboarding/entretien/slide-3.svg',
+  },
+  {
+    title: 'Suivi de progression',
+    description: 'Suivez vos performances, revoyez vos entretiens passés et identifiez vos axes de progrès.',
+    illustration: '/illustrations/onboarding/entretien/slide-4.svg',
+  },
+];
+
 export default function InterviewPage() {
-  const { user, plan } = useAuth();
+  const { user, isPro, isAdmin, plan } = useAuth();
   const router = useRouter();
   const supabase = createClient();
+  const { showModal, dismiss } = useOnboarding('interview');
   const [cvs, setCvs] = useState<{ id: string; title: string }[]>([]);
   const [error, setError] = useState('');
 
@@ -124,11 +150,13 @@ const clearFieldError = (field: string) => setFieldErrors((prev) => { const next
   };
 
   return (
-    <div style={{ maxWidth: '720px', margin: '0 auto' }} className="space-y-5">
+    <>
+      <OnboardingModal isOpen={showModal} slides={interviewSlides} onDismiss={dismiss} onStart={() => dismiss()} />
+      <div style={{ maxWidth: '720px', margin: '0 auto' }} className="space-y-5">
       <div>
-        <h1 style={{ fontSize: '22px', fontWeight: 500, margin: 0 }}>Nouvel entretien</h1>
+        <h1 style={{ fontSize: '22px', fontWeight: 500, margin: 0 }}>Entretien simulé</h1>
         <p style={{ fontSize: '14px', color: '#6B7280', margin: '4px 0 0' }}>
-          Configurez votre entretien simulé avec l&apos;IA
+          Entraîne-toi avec des questions générées par IA
         </p>
       </div>
 
@@ -271,5 +299,6 @@ const clearFieldError = (field: string) => setFieldErrors((prev) => { const next
         </div>
       </form>
     </div>
+    </>
   );
 }

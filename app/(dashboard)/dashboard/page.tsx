@@ -14,6 +14,9 @@ import {
   IconChevronRight,
   IconHistory,
   IconCrownFilled,
+  IconBrain,
+  IconChartBar,
+  IconUserCheck,
 } from '@tabler/icons-react';
 
 type Stats = {
@@ -24,6 +27,9 @@ type Stats = {
   mostPracticedType: string | null;
   mostPracticedTypeCount: number;
   totalScored: number;
+  testCount: number;
+  bilanCount: number;
+  personnaliteCount: number;
 };
 
 type SessionScore = { label: string; score: number | null };
@@ -75,6 +81,9 @@ export default function DashboardPage() {
     mostPracticedType: null,
     mostPracticedTypeCount: 0,
     totalScored: 0,
+    testCount: 0,
+    bilanCount: 0,
+    personnaliteCount: 0,
   });
   const [sessions, setSessions] = useState<RawSession[]>([]);
   const [loading, setLoading] = useState(true);
@@ -83,7 +92,7 @@ export default function DashboardPage() {
     async function loadStats() {
       if (!user) return;
 
-      const [cvResult, interviewResult] = await Promise.all([
+      const [cvResult, interviewResult, testResult, bilanResult, personnaliteResult] = await Promise.all([
         supabase
           .from('cv_documents')
           .select('id', { count: 'exact', head: true }),
@@ -91,6 +100,15 @@ export default function DashboardPage() {
           .from('interview_sessions')
           .select('score, started_at, interview_type', { count: 'exact' })
           .neq('status', 'in_progress'),
+        supabase
+          .from('cognitive_test_sessions')
+          .select('id', { count: 'exact', head: true }),
+        supabase
+          .from('skills_assessments')
+          .select('id', { count: 'exact', head: true }),
+        supabase
+          .from('personality_test_sessions')
+          .select('id', { count: 'exact', head: true }),
       ]);
 
       const data = (interviewResult.data ?? []) as RawSession[];
@@ -125,6 +143,9 @@ export default function DashboardPage() {
         mostPracticedType: mostType ? typeLabels[mostType[0]] || mostType[0] : null,
         mostPracticedTypeCount: mostType ? mostType[1] : 0,
         totalScored: scores.length,
+        testCount: testResult.count ?? 0,
+        bilanCount: bilanResult.count ?? 0,
+        personnaliteCount: personnaliteResult.count ?? 0,
       });
 
       setSessions(data);
@@ -171,7 +192,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
             <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#EEEDFE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -205,15 +226,45 @@ export default function DashboardPage() {
         <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
             <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <IconMessageFilled style={{ width: '16px', height: '16px', color: '#0C447C' }} />
+              <IconBrain style={{ width: '16px', height: '16px', color: '#0C447C' }} />
             </div>
-            <span style={{ fontSize: '13px', color: '#6B7280' }}>Type le plus pratiqué</span>
+            <span style={{ fontSize: '13px', color: '#6B7280' }}>Tests cognitifs</span>
           </div>
-          <div style={{ fontSize: '20px', fontWeight: 500, color: '#111827' }}>
-            {loading ? <Spinner size="sm" color="#6B7280" /> : (stats.mostPracticedType || '—')}
+          <div style={{ fontSize: '26px', fontWeight: 500, color: '#111827' }}>
+            {loading ? <Spinner size="sm" color="#6B7280" /> : stats.testCount}
           </div>
           <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '4px' }}>
-            {stats.mostPracticedTypeCount > 0 ? `${stats.mostPracticedTypeCount} sur ${stats.interviewCount} entretien${stats.interviewCount !== 1 ? 's' : ''}` : ''}
+            <Link href="/tests" style={{ color: '#534AB7', textDecoration: 'none' }}>Voir les tests</Link>
+          </div>
+        </div>
+
+        <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#E1F5EE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <IconChartBar style={{ width: '16px', height: '16px', color: '#085041' }} />
+            </div>
+            <span style={{ fontSize: '13px', color: '#6B7280' }}>Bilans compétences</span>
+          </div>
+          <div style={{ fontSize: '26px', fontWeight: 500, color: '#111827' }}>
+            {loading ? <Spinner size="sm" color="#6B7280" /> : stats.bilanCount}
+          </div>
+          <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '4px' }}>
+            <Link href="/bilan" style={{ color: '#534AB7', textDecoration: 'none' }}>Voir les bilans</Link>
+          </div>
+        </div>
+
+        <div style={{ background: '#fff', border: '0.5px solid #E5E7EB', borderRadius: '12px', padding: '1.1rem 1.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#EEEDFE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <IconUserCheck style={{ width: '16px', height: '16px', color: '#534AB7' }} />
+            </div>
+            <span style={{ fontSize: '13px', color: '#6B7280' }}>Tests personnalité</span>
+          </div>
+          <div style={{ fontSize: '26px', fontWeight: 500, color: '#111827' }}>
+            {loading ? <Spinner size="sm" color="#6B7280" /> : stats.personnaliteCount}
+          </div>
+          <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '4px' }}>
+            <Link href="/personnalite" style={{ color: '#534AB7', textDecoration: 'none' }}>Voir les tests</Link>
           </div>
         </div>
 
@@ -307,12 +358,48 @@ export default function DashboardPage() {
                   <IconChevronRight className="w-4 text-base-content/40 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link
-                  href="/history"
+                  href="/tests"
+                  className="flex items-center justify-between p-4 rounded-xl bg-base-200 hover:bg-base-300 transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <IconBrain style={{ width: '16px', height: '16px', color: '#0C447C' }} />
+                    </div>
+                    <span className="font-medium">Tests d'intelligence</span>
+                  </div>
+                  <IconChevronRight className="w-4 text-base-content/40 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  href="/bilan"
                   className="flex items-center justify-between p-4 rounded-xl bg-base-200 hover:bg-base-300 transition-colors group"
                 >
                   <div className="flex items-center gap-3">
                     <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#E1F5EE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <IconHistory style={{ width: '16px', height: '16px', color: '#085041' }} />
+                      <IconChartBar style={{ width: '16px', height: '16px', color: '#085041' }} />
+                    </div>
+                    <span className="font-medium">Bilan de compétences</span>
+                  </div>
+                  <IconChevronRight className="w-4 text-base-content/40 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  href="/personnalite"
+                  className="flex items-center justify-between p-4 rounded-xl bg-base-200 hover:bg-base-300 transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#EEEDFE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <IconUserCheck style={{ width: '16px', height: '16px', color: '#534AB7' }} />
+                    </div>
+                    <span className="font-medium">Test de personnalité</span>
+                  </div>
+                  <IconChevronRight className="w-4 text-base-content/40 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  href="/history"
+                  className="flex items-center justify-between p-4 rounded-xl bg-base-200 hover:bg-base-300 transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#F3E8FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <IconHistory style={{ width: '16px', height: '16px', color: '#6B21A8' }} />
                     </div>
                     <span className="font-medium">Voir l'historique</span>
                   </div>

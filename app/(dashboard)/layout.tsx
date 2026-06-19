@@ -4,13 +4,16 @@ import { useAuth } from '@/lib/contexts/auth-context';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { IconLayoutDashboard, IconFileDescription, IconMessage2, IconHistory, IconKey, IconLogout, IconMenu2, IconChevronRight } from '@tabler/icons-react';
+import { IconLayoutDashboard, IconFileDescription, IconMessage2, IconHistory, IconKey, IconLogout, IconMenu2, IconChevronRight, IconBrain, IconChartBar, IconUserCheck } from '@tabler/icons-react';
 import Spinner from '@/app/components/Spinner';
 
 const navItems = [
   { href: '/dashboard', label: 'Tableau de bord', icon: IconLayoutDashboard },
   { href: '/cv', label: 'Mon CV', icon: IconFileDescription },
   { href: '/interview', label: 'Entretien', icon: IconMessage2 },
+  { href: '/tests', label: 'Tests', icon: IconBrain },
+  { href: '/bilan', label: 'Bilan', icon: IconChartBar },
+  { href: '/personnalite', label: 'Personnalité', icon: IconUserCheck },
   { href: '/history', label: 'Historique', icon: IconHistory },
   { href: '/settings', label: 'Clés API', icon: IconKey },
 ];

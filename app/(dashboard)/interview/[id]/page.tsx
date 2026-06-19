@@ -27,7 +27,8 @@ export default function InterviewChatPage() {
   const chatEndRef = useRef<HTMLDivElement>(null);
   const firstQuestionSent = useRef(false);
 
-  const id = params.id as string;
+  const rawId = params.id;
+  const id = typeof rawId === 'string' ? rawId : '';
 
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);

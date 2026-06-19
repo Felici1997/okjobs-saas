@@ -43,7 +43,8 @@ export default function FeedbackPage() {
   const router = useRouter();
   const params = useParams();
   const supabase = createClient();
-  const id = params.id as string;
+  const rawId = params.id;
+  const id = typeof rawId === 'string' ? rawId : '';
 
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<{
@@ -279,7 +280,7 @@ export default function FeedbackPage() {
         </div>
       ) : null}
 
-      {session.sector && session.job_title && (
+      {session.sector && session.job_title && id && (
         <TrainingRecommendationCard
           sessionId={id}
           jobTitle={session.job_title}

@@ -11,6 +11,18 @@ const ALLOWED_TABLES = new Set([
   'profiles',
   'training_recommendations',
   'whatsapp_logs',
+  'skills_assessments',
+  'skills_assessment_results',
+  'skills_assessment_questions',
+  'skills_assessment_answers',
+  'skills_assessment_categories',
+  'cognitive_test_sessions',
+  'cognitive_test_questions',
+  'personality_test_sessions',
+  'personality_test_questions',
+  'personality_test_answers',
+  'personality_test_results',
+  'user_onboarding_flags',
 ]);
 
 export async function POST(request: NextRequest) {
