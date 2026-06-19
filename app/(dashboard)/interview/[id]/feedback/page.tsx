@@ -5,7 +5,7 @@ import { useAuth } from '@/lib/contexts/auth-context';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
-import TrainingRecommendationCard from '@/components/TrainingRecommendationCard';
+import TrainingRecommendationCard from '@/app/components/TrainingRecommendationCard';
 import {
   IconLoader2,
   IconArrowLeft,
