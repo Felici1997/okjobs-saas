@@ -5,6 +5,7 @@ import { useAuth } from '@/lib/contexts/auth-context';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
+import TrainingRecommendationCard from '@/components/TrainingRecommendationCard';
 import {
   IconLoader2,
   IconArrowLeft,
@@ -47,6 +48,7 @@ export default function FeedbackPage() {
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<{
     job_title: string;
+    sector: string;
     interview_type: string;
     status: string;
     score: number | null;
@@ -276,6 +278,14 @@ export default function FeedbackPage() {
           )}
         </div>
       ) : null}
+
+      {session.sector && session.job_title && (
+        <TrainingRecommendationCard
+          sessionId={params.id}
+          jobTitle={session.job_title}
+          sector={session.sector}
+        />
+      )}
 
       <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', paddingBottom: '2rem' }}>
         <Link href="/interview" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', border: 'none', background: '#534AB7', color: '#fff', textDecoration: 'none' }}>

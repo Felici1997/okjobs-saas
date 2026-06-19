@@ -18,6 +18,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Affiliate endpoints : auth côté route (key ou session)
+  if (pathname.startsWith('/api/affiliate') || pathname.startsWith('/api/whatsapp')) {
+    return NextResponse.next();
+  }
+
   const { supabaseResponse, user } = await updateSession(request);
 
   // Pages auth (login/register) : rediriger vers dashboard si déjà connecté
