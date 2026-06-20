@@ -11,9 +11,9 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Okjobs - Entraînement aux entretiens d'embauche",
+  title: "Okjobs - Préparez votre carrière avec l'IA",
   description:
-    "Préparez-vous à vos entretiens d'embauche avec l'IA. Entraînez-vous en conditions réelles et recevez des feedbacks personnalisés.",
+    "Tests cognitifs, bilan de compétences, test de personnalité Big Five et entretiens simulés par IA. Une plateforme complète pour maîtriser chaque étape de votre recherche d'emploi.",
 };
 
 export default function RootLayout({

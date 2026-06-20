@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
-import { IconArrowRight, IconBolt, IconUsers, IconBrain, IconMessage, IconChartBar, IconPlayerPlay } from '@tabler/icons-react';
+import { IconArrowRight, IconBolt, IconUsers, IconBrain, IconMessage, IconChartBar, IconPlayerPlay, IconStar, IconChecks, IconCertificate, IconTrophy, IconBulb, IconGrowth } from '@tabler/icons-react';
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
 
@@ -59,52 +59,88 @@ const stats = [
   { value: '98%', label: 'Satisfaction' },
 ];
 
+const modules = [
+  {
+    icon: IconBrain,
+    title: 'Tests d\'intelligence',
+    desc: 'QCM générés par IA pour évaluer votre raisonnement logique, mathématique, verbal et spatial.',
+    stat: '4 catégories',
+    color: '#009fe1',
+    href: '/tests',
+  },
+  {
+    icon: IconChartBar,
+    title: 'Bilan de compétences',
+    desc: '25 questions sur 5 axes (Communication, Leadership, Problèmes, Équipe, Adaptabilité) pour cartographier vos forces.',
+    stat: '5 compétences',
+    color: '#7C3AED',
+    href: '/bilan',
+  },
+  {
+    icon: IconStar,
+    title: 'Test de personnalité',
+    desc: 'Modèle Big Five (OCEAN) — 30 affirmations pour découvrir vos traits et les environnements qui vous correspondent.',
+    stat: '5 traits',
+    color: '#059669',
+    href: '/personnalite',
+  },
+  {
+    icon: IconMessage,
+    title: 'Entretien simulé',
+    desc: 'Questions techniques, comportementales et motivationnelles adaptées à votre CV et au poste visé.',
+    stat: '3 types',
+    color: '#D97706',
+    href: '/interview',
+  },
+];
+
 const features = [
   {
-    title: "Le plus grand réseau d'entraîneurs IA",
-    desc: "Notre IA a analysé des milliers d'entretiens réels. Chaque session est calibrée sur votre secteur, votre poste et votre niveau d'expérience.",
-    stat: { value: '5 000+', label: 'Scénarios d\'entretien' },
+    title: 'Évaluez votre profil complet',
+    desc: "Tests cognitifs, bilan de compétences, personnalité et entretien simulé : une photo à 360° de votre employabilité. L'IA analyse chaque résultat pour vous connaître mieux que vous-même.",
+    stat: { value: '4', label: 'Modules complémentaires' },
   },
   {
-    title: 'Une IA qui apprend à vous connaître',
-    desc: "À chaque réponse, notre IA affine sa compréhension de votre profil. Elle adapte les questions pour vous pousser là où vous en avez besoin.",
-    stat: { value: '85%', label: 'Questions personnalisées' },
+    title: 'Des recommandations sur mesure',
+    desc: "À partir de vos résultats, l'IA identifie vos axes de progression et vous suggère des formations adaptées parmi notre catalogue de programmes partenaires.",
+    stat: { value: '200+', label: 'Programmes de formation' },
   },
   {
-    title: 'Des résultats en jours, pas en mois',
-    desc: "3 à 5 sessions suffisent pour gagner en aisance. Nos utilisateurs décrochent un entretien réel en moyenne 2 semaines après leur première session.",
-    stat: { value: '2 sem.', label: 'Pour décrocher un entretien' },
+    title: 'Suivez votre progression',
+    desc: 'Chaque module garde l\'historique de vos sessions. Visualisez l\'évolution de vos scores, comparez vos résultats et mesurez vos progrès dans le temps.',
+    stat: { value: 'Historique', label: 'Complet' },
   },
   {
-    title: 'Accompagnement dédié',
-    desc: "Votre coach IA est disponible 24/7. Recevez des feedbacks détaillés après chaque réponse et suivez votre progression dans le temps.",
-    stat: { value: '24/7', label: 'Disponible' },
+    title: 'Certifiez vos acquis',
+    desc: 'Partagez vos résultats de bilan et de personnalité avec les recruteurs. Faites la différence en montrant une connaissance approfondie de votre profil professionnel.',
+    stat: { value: 'Export', label: 'Rapports PDF' },
   },
 ];
 
 const testimonials = [
   {
-    text: "Après trois entraînements sur Okjobs, j'étais parfaitement préparée. Le feedback m'a aidé à corriger mes points faibles avant l'entretien réel.",
+    text: "Le bilan de compétences m'a vraiment ouvert les yeux sur mes points forts. Les recommandations de formation étaient parfaitement adaptées.",
     name: 'Sophie Martin',
     role: 'Développeuse Full Stack',
   },
   {
-    text: "Le mode chronométré m'a permis d'être calibré le jour J. Je savais exactement combien de temps prendre pour chaque réponse.",
+    text: "Tests, personnalité, entretien... Tout est connecté. J'ai pu préparer ma recherche d'emploi de A à Z avec une seule plateforme.",
     name: 'Thomas Dubois',
     role: 'Chef de produit',
   },
   {
-    text: "La personnalisation des questions est bluffante. On croirait vraiment parler à un recruteur qui connaît mon CV et mon secteur.",
+    text: "Le test de personnalité Big Five est incroyablement précis. Ça m'a aidé à cibler les entreprises dont la culture me correspond.",
     name: 'Léa Petit',
     role: 'Consultante',
   },
 ];
 
-const recruiterFeatures = [
-  { icon: IconBrain, title: 'IA pour vous préparer', desc: 'Notre IA génère des questions sur mesure à partir de votre CV et du poste visé.' },
-  { icon: IconUsers, title: 'Coach personnel virtuel', desc: 'Un professeur particulier disponible à toute heure, sans rendez-vous.' },
-  { icon: IconChartBar, title: 'Statistiques détaillées', desc: 'Suivez votre progression : scores, temps de réponse, domaines à améliorer.' },
-  { icon: IconMessage, title: 'Feedback en temps réel', desc: 'Recevez une analyse de chaque réponse avec des conseils concrets.' },
+const steps = [
+  { num: '01', title: 'Créez votre profil', desc: 'Inscrivez-vous gratuitement en 30 secondes.' },
+  { num: '02', title: 'Évaluez-vous', desc: 'Passez les modules dans l\'ordre de votre choix : tests, bilan, personnalité.' },
+  { num: '03', title: 'Analysez vos résultats', desc: "Recevez des rapports détaillés et des recommandations de formation." },
+  { num: '04', title: 'Entraînez-vous', desc: "Simulez des entretiens réels avec l'IA et améliorez vos performances." },
+  { num: '05', title: 'Décrochez le poste', desc: 'Postulez avec confiance, fort de votre préparation complète.' },
 ];
 
 export default function LandingPage() {
@@ -112,7 +148,6 @@ export default function LandingPage() {
     <>
       <Navbar />
       <main>
-
         {/* ===== HERO ===== */}
         <section className="relative min-h-[90vh] flex items-center pt-24 pb-16 overflow-hidden">
           <div className="absolute inset-0 hero-grid-bg" />
@@ -121,15 +156,15 @@ export default function LandingPage() {
               <div className="lg:col-span-6">
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-black/[0.03] border border-black/5 text-xs font-semibold tracking-wider text-black/50 mb-8">
                   <IconBolt className="w-3.5" style={{ color: '#009fe1' }} />
-                  L&apos;IA au service de votre carrière
+                  4 outils IA pour votre carrière
                 </div>
                 <h1 className="text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight leading-[0.9]">
-                  Décrochez le poste<br />
-                  <span style={{ color: '#009fe1' }}>sans stresser l&apos;entretien.</span>
+                  Préparez-vous<br />
+                  <span style={{ color: '#009fe1' }}>de A à Z.</span>
                 </h1>
                 <p className="mt-6 text-lg md:text-xl text-black/50 max-w-lg leading-relaxed">
-                  Des milliers de candidats utilisent notre IA pour se préparer aux entretiens.
-                  Simulations réalistes, feedback instantané, progression garantie.
+                  Tests cognitifs, bilan de compétences, personnalité et entretien simulé.
+                  Une plateforme complète pour maîtriser chaque étape de votre recherche d&apos;emploi.
                 </p>
                 <div className="mt-10 flex flex-col sm:flex-row gap-4">
                   <Link
@@ -151,7 +186,7 @@ export default function LandingPage() {
                   </Link>
                 </div>
                 <p className="mt-6 text-xs text-black/30 font-mono tracking-wider">
-                  3 entretiens gratuits par mois &middot; Sans carte bancaire
+                  Accès gratuit à tous les modules &middot; Sans carte bancaire
                 </p>
               </div>
               <div className="lg:col-span-6 hidden lg:flex justify-center">
@@ -161,8 +196,80 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ===== TESTIMONIAL QUOTE ===== */}
+        {/* ===== MODULES ===== */}
+        <section id="modules" className="border-t border-black/5 bg-black/[0.02]">
+          <div className="max-w-6xl mx-auto px-6 py-20 md:py-28">
+            <FadeInSection>
+              <p className="text-xs font-mono font-semibold tracking-wider text-center mb-4" style={{ color: '#009fe1' }}>MODULES</p>
+              <h2 className="text-3xl md:text-5xl font-semibold tracking-tight text-center leading-[1.05]">
+                Tout ce dont vous avez besoin<br />
+                <span style={{ color: '#009fe1' }}>pour réussir vos entretiens</span>
+              </h2>
+            </FadeInSection>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+              {modules.map((m) => {
+                const Icon = m.icon;
+                return (
+                  <FadeInSection key={m.title}>
+                    <Link href={m.href} className="block group h-full">
+                      <div className="p-8 bg-white border border-black/5 h-full hover:shadow-lg transition-shadow duration-300">
+                        <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-6" style={{ background: `${m.color}15` }}>
+                          <Icon className="w-6" style={{ color: m.color }} />
+                        </div>
+                        <h3 className="text-base font-semibold mb-3">{m.title}</h3>
+                        <p className="text-sm text-black/50 leading-relaxed mb-6">{m.desc}</p>
+                        <div className="flex items-center gap-2 text-xs font-semibold tracking-wider" style={{ color: m.color }}>
+                          <span>{m.stat}</span>
+                          <IconArrowRight className="w-3 group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </div>
+                    </Link>
+                  </FadeInSection>
+                );
+              })}
+            </div>
+            <FadeInSection>
+              <div className="mt-10 p-8 bg-white border border-black/5 text-center">
+                <IconGrowth className="w-8 mx-auto mb-4" style={{ color: '#009fe1' }} />
+                <h3 className="text-lg font-semibold mb-2">Recommandations de formation personnalisées</h3>
+                <p className="text-sm text-black/50 max-w-xl mx-auto">
+                  En combinant vos résultats aux 4 modules, notre IA vous suggère les formations les plus adaptées
+                  à votre profil parmi +200 programmes partenaires.
+                </p>
+              </div>
+            </FadeInSection>
+          </div>
+        </section>
+
+        {/* ===== HOW IT WORKS ===== */}
         <section className="border-t border-black/5">
+          <div className="max-w-4xl mx-auto px-6 py-20 md:py-28">
+            <FadeInSection>
+              <p className="text-xs font-mono font-semibold tracking-wider text-center mb-4" style={{ color: '#009fe1' }}>PARCOURS</p>
+              <h2 className="text-3xl md:text-5xl font-semibold tracking-tight text-center leading-[1.05]">
+                Votre parcours en 5 étapes
+              </h2>
+            </FadeInSection>
+            <div className="mt-16 space-y-8">
+              {steps.map((s, i) => (
+                <FadeInSection key={s.num} delay={i * 60}>
+                  <div className="flex items-start gap-6 group">
+                    <div className="flex-shrink-0 w-14 h-14 rounded-lg flex items-center justify-center text-sm font-bold tracking-wider text-white" style={{ background: '#009fe1' }}>
+                      {s.num}
+                    </div>
+                    <div className="pt-2">
+                      <h3 className="text-lg font-semibold mb-1">{s.title}</h3>
+                      <p className="text-sm text-black/50">{s.desc}</p>
+                    </div>
+                  </div>
+                </FadeInSection>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ===== TESTIMONIAL QUOTE ===== */}
+        <section className="border-t border-black/5 bg-black/[0.02]">
           <div className="max-w-5xl mx-auto px-6 py-20 md:py-28">
             <p className="text-2xl md:text-3xl lg:text-4xl font-semibold leading-[1.2] text-black/80 text-center max-w-4xl mx-auto">
               &ldquo;J&apos;ai testé des tonnes d&apos;outils de préparation. Rien ne vaut la personnalisation d&apos;Okjobs. L&apos;IA adapte chaque question à mon profil et mon secteur.&rdquo;
@@ -178,7 +285,7 @@ export default function LandingPage() {
         </section>
 
         {/* ===== STATS ===== */}
-        <section className="border-t border-black/5 bg-black/[0.02]">
+        <section className="border-t border-black/5">
           <div className="max-w-5xl mx-auto px-6 py-16">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
               {stats.map((s) => (
@@ -190,10 +297,10 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ===== FEATURES (stacked) ===== */}
-        <section id="features" className="border-t border-black/5">
+        {/* ===== FEATURES ===== */}
+        <section id="features" className="border-t border-black/5 bg-black/[0.02]">
           {features.map((f, i) => (
-            <div key={f.title} className={`${i % 2 === 0 ? '' : 'bg-black/[0.02]'} border-b border-black/5`}>
+            <div key={f.title} className={`${i % 2 === 0 ? '' : 'bg-white'} border-b border-black/5`}>
               <div className="max-w-6xl mx-auto px-6 py-20 md:py-28">
                 <div className={`flex flex-col md:flex-row gap-16 items-center ${i % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}>
                   <FadeInSection delay={i * 50}><div className="flex-1">
@@ -215,7 +322,7 @@ export default function LandingPage() {
         </section>
 
         {/* ===== TESTIMONIALS ===== */}
-        <section className="border-t border-black/5 bg-black/[0.02]">
+        <section className="border-t border-black/5">
           <div className="max-w-6xl mx-auto px-6 py-20 md:py-28">
             <FadeInSection>
               <p className="text-xs font-mono font-semibold tracking-wider text-center mb-4" style={{ color: '#009fe1' }}>TÉMOIGNAGES</p>
@@ -236,27 +343,27 @@ export default function LandingPage() {
                 className="inline-flex items-center gap-2 text-sm font-semibold transition-colors"
                 style={{ color: '#009fe1' }}
               >
-                Lire plus d&apos;histoires
+                Rejoignez +10 000 candidats
                 <IconArrowRight className="w-4" />
               </Link>
             </div>
           </div>
         </section>
 
-        {/* ===== RECRUITERS SECTION (secondary) ===== */}
-        <section className="border-t border-black/5">
+        {/* ===== RECRUITERS SECTION ===== */}
+        <section className="border-t border-black/5 bg-black/[0.02]">
           <div className="max-w-6xl mx-auto px-6 py-20 md:py-28">
             <div className="grid lg:grid-cols-12 gap-12 items-start">
               <div className="lg:col-span-5">
                 <FadeInSection>
                   <p className="text-xs font-mono font-semibold tracking-wider mb-4" style={{ color: '#009fe1' }}>POUR LES RECRUTEURS</p>
                   <h2 className="text-3xl md:text-5xl font-semibold tracking-tight leading-[1.05]">
-                    Le moyen le plus rapide<br />
-                    <span style={{ color: '#009fe1' }}>d&apos;évaluer vos candidats</span>
+                    Évaluez vos candidats<br />
+                    <span style={{ color: '#009fe1' }}>sur tous les plans</span>
                   </h2>
                   <p className="mt-6 text-base text-black/50 leading-relaxed">
-                    Proposez des entretiens techniques, comportementaux et motivationnels à vos candidats.
-                    Recevez des rapports détaillés sur leurs performances.
+                    Proposez à vos candidats un parcours complet : tests cognitifs, bilan de compétences,
+                    personnalité et entretien. Recevez des rapports détaillés sur chaque candidat.
                   </p>
                   <div className="mt-8">
                     <Link
@@ -274,7 +381,12 @@ export default function LandingPage() {
               </div>
               <div className="lg:col-span-7">
                 <div className="grid sm:grid-cols-2 gap-px bg-black/10">
-                  {recruiterFeatures.map((rf) => {
+                  {[
+                    { icon: IconBrain, title: 'Tests cognitifs', desc: 'Évaluez le raisonnement logique, mathématique et verbal.' },
+                    { icon: IconCertificate, title: 'Bilan de compétences', desc: 'Cartographie précise des soft skills de chaque candidat.' },
+                    { icon: IconStar, title: 'Profil de personnalité', desc: "Comprenez les traits Big Five et l'adéquation culturelle." },
+                    { icon: IconTrophy, title: 'Rapports consolidés', desc: 'Synthèse multiaxial avec recommandations de formation.' },
+                  ].map((rf) => {
                     const Icon = rf.icon;
                     return (
                       <FadeInSection key={rf.title}>
@@ -304,11 +416,12 @@ export default function LandingPage() {
             <FadeInSection>
               <p className="text-xs font-mono font-semibold tracking-wider text-white/60 mb-4">COMMENCER</p>
               <h2 className="text-4xl md:text-6xl font-semibold tracking-tight leading-[1.05] text-white">
-                Le meilleur moment<br />
-                c&apos;était hier.
+                Prêt à passer à<br />
+                la vitesse supérieure ?
               </h2>
               <p className="mt-6 text-base text-white/60 max-w-md mx-auto leading-relaxed">
-                14 jours d&apos;essai gratuit, sans carte bancaire. Rejoignez les candidats qui préparent leurs entretiens avec Okjobs.
+                Accès gratuit à tous les modules. Pas de carte bancaire. Rejoignez les candidats
+                qui préparent leur avenir avec Okjobs.
               </p>
               <div className="mt-10">
                 <Link
@@ -316,17 +429,15 @@ export default function LandingPage() {
                   className="group inline-flex items-center gap-3 px-8 py-4 bg-white text-sm font-bold tracking-wide hover:bg-white/90 transition-colors"
                   style={{ color: '#009fe1' }}
                 >
-                  Commencer mon essai gratuit
+                  Créer mon compte gratuit
                   <IconArrowRight className="w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </FadeInSection>
           </div>
         </section>
-
       </main>
 
-      {/* Sticky CTA mobile */}
       <div className="sticky-cta-mobile">
         <Link
           href="/register"
